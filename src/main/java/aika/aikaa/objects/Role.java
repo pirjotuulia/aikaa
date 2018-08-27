@@ -8,6 +8,15 @@ public class Role implements Comparable<Role> {
     @GeneratedValue
     private Integer id;
     private String name;
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public Role(String name) {
         this.name = name;
@@ -34,6 +43,10 @@ public class Role implements Comparable<Role> {
 
     @Override
     public int compareTo(Role r) {
-        return this.name.compareTo(r.name);
+        if (this.category.equals(r.category)) {
+            return this.name.compareTo(r.name);
+        } else  {
+            return this.category.compareTo(r.category);
+        }
     }
 }

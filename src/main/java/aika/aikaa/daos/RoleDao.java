@@ -23,7 +23,7 @@ public class RoleDao {
     }
 
     public List<Role> allRoles() {
-        String sql = "SELECT * FROM role";
+        String sql = "SELECT role.id, role.name, rolecategory.name as category FROM role JOIN rolecategory WHERE role.categoryId = rolecategory.id;";
         List<Role> roleList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(Role.class));
         Collections.sort(roleList);
         return roleList;
