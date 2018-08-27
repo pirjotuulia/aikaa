@@ -3,7 +3,7 @@ package aika.aikaa.objects;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-public class Role {
+public class Role implements Comparable<Role> {
     @Id
     @GeneratedValue
     private Integer id;
@@ -30,5 +30,10 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public int compareTo(Role r) {
+        return this.name.compareTo(r.name);
     }
 }

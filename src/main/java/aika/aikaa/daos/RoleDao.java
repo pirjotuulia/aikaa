@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.List;
 @Component
 public class RoleDao {
@@ -24,6 +25,7 @@ public class RoleDao {
     public List<Role> allRoles() {
         String sql = "SELECT * FROM role";
         List<Role> roleList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(Role.class));
+        Collections.sort(roleList);
         return roleList;
     }
 

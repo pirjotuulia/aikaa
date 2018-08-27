@@ -16,14 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `sched`
---
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `sched` /*!40100 DEFAULT CHARACTER SET latin1 */;
-
-USE `sched`;
-
---
 -- Table structure for table `address`
 --
 
@@ -91,7 +83,7 @@ CREATE TABLE `event` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `event_id_uindex` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,7 +92,7 @@ CREATE TABLE `event` (
 
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
-INSERT INTO `event` VALUES (1,'Konsertti1'),(2,'Konsertti2'),(3,'NotAvailable'),(4,'TestikonserttiMuutettu'),(6,'Lisäystestikonsertti'),(8,'Testikonsertti'),(9,'Testikonsertti'),(10,'Uusi testikonsertti'),(11,'Testikonsertti'),(12,'Testikonsertti');
+INSERT INTO `event` VALUES (1,'Konsertti1'),(2,'Konsertti2'),(3,'NotAvailable'),(4,'TestikonserttiMuutettu'),(6,'Lisäystestikonsertti'),(8,'Testikonsertti'),(9,'Testikonsertti'),(10,'Uusi testikonsertti'),(11,'Testikonsertti'),(12,'Testikonsertti'),(13,'Testikonsertti');
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,8 +160,9 @@ DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
+  `categoryId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,8 +171,33 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES (1,'Viulisti'),(2,'Sopraano'),(3,'Alttoviulisti'),(4,'Sellisti'),(5,'Mezzosopraano'),(6,'Pianisti'),(7,'Konserttisihteeri'),(8,'Järjestäjä'),(9,'Autonkuljettaja'),(10,'Kontrabasisti'),(11,'Lyömäsoittaja'),(12,'Klarinetisti'),(13,'Sivunkääntäjä');
+INSERT INTO `role` VALUES (1,'Viulisti',1),(2,'Sopraano',7),(3,'Alttoviulisti',1),(4,'Sellisti',1),(5,'Mezzosopraano',7),(6,'Pianisti',6),(7,'Konserttisihteeri',9),(8,'Järjestäjä',9),(9,'Autonkuljettaja',9),(10,'Kontrabasisti',1),(11,'Lyömäsoittaja',4),(12,'Klarinetisti',2),(13,'Sivunkääntäjä',9),(14,'Pianonvirittäjä',9);
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rolecategory`
+--
+
+DROP TABLE IF EXISTS `rolecategory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rolecategory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `rolecategory_id_uindex` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rolecategory`
+--
+
+LOCK TABLES `rolecategory` WRITE;
+/*!40000 ALTER TABLE `rolecategory` DISABLE KEYS */;
+INSERT INTO `rolecategory` VALUES (1,'Jousisoittimet'),(2,'Puupuhaltimet'),(3,'Vaskipuhaltimet'),(4,'Lyömäsoittimet'),(5,'Kielisoittimet'),(6,'Kosketinsoittimet'),(7,'Laulu'),(8,'Muut'),(9,'Tukihenkilöstö');
+/*!40000 ALTER TABLE `rolecategory` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -340,4 +358,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-08-27 12:53:14
+-- Dump completed on 2018-08-27 13:54:38
