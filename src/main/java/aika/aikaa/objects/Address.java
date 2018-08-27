@@ -12,10 +12,11 @@ public class Address {
     private String country;
     private String district;
 
-    public Address(String streetAddress, String postcode, String country) {
+    public Address(String streetAddress, String postcode, String country, String district) {
         this.streetAddress = streetAddress;
         this.postcode = postcode;
         this.country = country;
+        this.district = district;
     }
 
     public Address() {
