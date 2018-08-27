@@ -3,9 +3,9 @@ package aika.aikaa.controllers;
 import aika.aikaa.daos.RoleDao;
 import aika.aikaa.objects.Role;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 @RestController
@@ -19,5 +19,24 @@ public class RoleController {
     @GetMapping("/api/roles")
     public List<Role> allRoles() {
         return rd.allRoles();
+    }
+
+    @GetMapping("/api/roles/{id}")
+    public Role roleById(@PathVariable Integer id) {
+        return rd.oneRole(id);
+    }
+    @PostMapping("/api/roles")
+    public Role addRole(@RequestBody Role role) {
+        return rd.createRole(role);
+    }
+
+    @PutMapping("/api/roles/{id}")
+    public boolean updateRole(@RequestBody Role role, @PathVariable Integer id) {
+        return rd.updateRole(role, id);
+    }
+
+    @DeleteMapping("/api/roles/{id}")
+    public boolean deleteRole(@PathVariable Integer id) {
+        return rd.deleteRole(id);
     }
 }
