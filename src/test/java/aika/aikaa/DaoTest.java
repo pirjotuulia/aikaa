@@ -32,7 +32,7 @@ public class DaoTest {
 
     @Test
     public void listaRoolissaToimivista() {
-        List<User> roleUserList = ud.listOfAllUsersWithRole(1);
+        List<User> roleUserList = ud.listOfAllUsersWithRoleId(1);
         assertEquals(roleUserList.size(), 2);
         assertEquals(roleUserList.get(0).getName(), "Muusikko1");
         assertEquals(roleUserList.get(0).getId(), (Integer) 1);

@@ -59,7 +59,6 @@ public class EventDao {
     public List<Event> allEventsWithEverything() {
         List<Event> listOfEvents = new ArrayList<>();
         listOfAllEvents().stream().forEach(e -> listOfEvents.add(oneEventWithEverything(e.getId())));
-        System.out.println(listOfEvents.get(1));
         return listOfEvents;
     }
 
