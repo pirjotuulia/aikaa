@@ -13,6 +13,7 @@ public class LoginController {
 
     @GetMapping("/user")
     public Principal user(Principal principal) {
+        System.out.println(principal.getName());
         return principal;
     }
     @PostMapping("/auth")

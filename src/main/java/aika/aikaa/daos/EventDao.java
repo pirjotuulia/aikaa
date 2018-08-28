@@ -51,7 +51,7 @@ public class EventDao {
     }
 
     public List<SubEvent> listOfSubEvents(int eventId) {
-        String sql = "SELECT * FROM subevent WHERE eventid=?";
+        String sql = "SELECT subevent.*, place.name as place FROM subevent JOIN place ON place.id = subevent.placeid WHERE eventid=?";
         List<SubEvent> subEventList = jdbcTemplate.query(sql, new Object[]{eventId}, new BeanPropertyRowMapper(SubEvent.class));
         return subEventList;
     }

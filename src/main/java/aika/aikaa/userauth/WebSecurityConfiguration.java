@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import java.security.Principal;
+
 @EnableOAuth2Sso
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {

@@ -94,7 +94,10 @@ public class UserDao {
         //String sql = "DELETE FROM user WHERE id=?;";
         int onnistui = jdbcTemplate.update(sql, new Object[]{id});
         if (onnistui > 0) {
-            return true;
+            sql = "DELETE FROM userrole WHERE userid=?";
+            onnistui = jdbcTemplate.update(sql, new Object[]{id});
+            if (onnistui > 0)
+                return true;
         }
         return false;
     }

@@ -26,13 +26,13 @@ public class PlaceDao {
     }
 
     public List<Place> listOfAllPlaces() {
-        String sql = "SELECT place.*, address.streetaddress, address.postcode, address.country, address.district FROM place JOIN address ON place.addressid = address.id;";
+        String sql = "SELECT place.*, address.streetaddress, address.postcode, address.country, address.city FROM place JOIN address ON place.addressid = address.id;";
         List<Place> placeList = jdbcTemplate.query(sql, new PlaceMapper());
         return placeList;
     }
 
     public Place onePlace(Integer id) {
-        String sql = "SELECT place.*, address.streetaddress, address.postcode, address.country, address.district FROM place JOIN address ON place.addressId = address.id WHERE place.id=?;";
+        String sql = "SELECT place.*, address.streetaddress, address.postcode, address.country, address.city FROM place JOIN address ON place.addressId = address.id WHERE place.id=?;";
         Place place = (Place) jdbcTemplate.queryForObject(sql, new Object[]{id}, new PlaceMapper());
         return place;
     }
@@ -81,14 +81,14 @@ public class PlaceDao {
     }
 
     private Address addAddress(Address address) {
-        String sql = "INSERT INTO address (streetaddress, postcode, country, district) VALUES (?,?,?,?);";
+        String sql = "INSERT INTO address (streetaddress, postcode, country, city) VALUES (?,?,?,?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         PreparedStatementCreator psc = connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, address.getStreetAddress());
             ps.setString(2, address.getPostcode());
             ps.setString(3, address.getCountry());
-            ps.setString(4, address.getDistrict());
+            ps.setString(4, address.getCity());
             return ps;
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
@@ -100,9 +100,9 @@ public class PlaceDao {
     }
 
     private boolean updateAddress(Address address, Integer id) {
-        String sql = "UPDATE address SET streetaddress=?, postcode=?, country=?, district=? WHERE id=?";
+        String sql = "UPDATE address SET streetaddress=?, postcode=?, country=?, city=? WHERE id=?";
         int onnistui = jdbcTemplate.update(sql, new Object[]{address.getStreetAddress(),
-                address.getPostcode(), address.getCountry(), address.getDistrict(), id});
+                address.getPostcode(), address.getCountry(), address.getCity(), id});
         if (onnistui > 0) {
             return true;
         }
@@ -120,7 +120,7 @@ public class PlaceDao {
             place.getAddress().setStreetAddress(rs.getString("streetaddress"));
             place.getAddress().setPostcode(rs.getString("postcode"));
             place.getAddress().setCountry(rs.getString("country"));
-            place.getAddress().setDistrict(rs.getString("district"));
+            place.getAddress().setCity(rs.getString("city"));
             return place;
         }
     }

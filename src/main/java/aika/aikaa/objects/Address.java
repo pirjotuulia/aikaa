@@ -10,13 +10,13 @@ public class Address {
     private String streetAddress;
     private String postcode;
     private String country;
-    private String district;
+    private String city;
 
-    public Address(String streetAddress, String postcode, String country, String district) {
+    public Address(String streetAddress, String postcode, String country, String city) {
         this.streetAddress = streetAddress;
         this.postcode = postcode;
         this.country = country;
-        this.district = district;
+        this.city = city;
     }
 
     public Address() {
@@ -54,11 +54,11 @@ public class Address {
         this.country = country;
     }
 
-    public String getDistrict() {
-        return district;
+    public String getCity() {
+        return city;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setCity(String city) {
+        this.city = city;
     }
 }
