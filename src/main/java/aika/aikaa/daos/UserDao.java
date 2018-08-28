@@ -23,39 +23,42 @@ public class UserDao {
     }
 
     public List<User> listOfAllUsers() {
-        String sql = "SELECT * FROM user";
+        String sql = "SELECT * FROM \"user\";";
+//        String sql = "SELECT * FROM user;";
         List<User> userList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(User.class));
         userList.stream().forEach(u -> u.setRoles(usersRoles(u.getId())));
         return userList;
     }
 
     public List<User> listOfAllUsersWithRoleId(int roleId) {
-        String sql = "SELECT user.* from userrole JOIN user, role WHERE userrole.roleId =? AND user.id = userrole.userId AND role.id = userrole.roleId;";
+        String sql = "SELECT \"user\".* from userrole JOIN user ON \"user\".id = userrole.userId JOIN role ON role.id = userrole.roleId WHERE userrole.roleId =?;";
+        //String sql = "SELECT user.* from userrole JOIN user ON user.id = userrole.userId JOIN role ON role.id = userrole.roleId WHERE userrole.roleId =?;";
         List<User> roleUserList = jdbcTemplate.query(sql, new Object[]{roleId}, new BeanPropertyRowMapper(User.class));
         return roleUserList;
     }
 
     public User oneUser(int userId) {
-        String sql = "SELECT * from user WHERE id=?";
+        String sql = "SELECT * from \"user\" WHERE id=?";
+        //String sql = "SELECT * from user WHERE id=?";
         User user = (User) jdbcTemplate.queryForObject(sql, new Object[]{userId}, new BeanPropertyRowMapper(User.class));
         return user;
     }
 
     public List<Role> usersRoles(int userId) {
-        String sql = "SELECT role.*, rolecategory.name as category from userrole JOIN user, role, rolecategory WHERE userrole.userId=? AND user.id = userrole.userId AND role.id = userrole.roleId AND role.categoryId = rolecategory.id;";
+        String sql = "SELECT role.*, rolecategory.name as category from userrole JOIN \"user\" ON \"user\".id = userrole.userId JOIN role ON role.id = userrole.roleId JOIN rolecategory ON role.categoryId = rolecategory.id WHERE userrole.userId=?;";
+        //String sql = "SELECT role.*, rolecategory.name as category from userrole JOIN user ON user.id = userrole.userId JOIN role ON role.id = userrole.roleId JOIN rolecategory ON role.categoryId = rolecategory.id WHERE userrole.userId=?;";
         List<Role> roleList = jdbcTemplate.query(sql, new Object[]{userId}, new BeanPropertyRowMapper(Role.class));
         return roleList;
     }
 
     public User oneUserWithRoles(int userId) {
         User user = oneUser(userId);
-        String sql = "SELECT role.*, rolecategory.name as category from userrole JOIN user, role, rolecategory WHERE userrole.userId=? AND user.id = userrole.userId AND role.id = userrole.roleId AND role.categoryId = rolecategory.id;";
         user.setRoles(usersRoles(userId));
         return user;
     }
 
     public User createUser(User user) {
-        String sql = "INSERT INTO user (name, userLevel) VALUES (?,?);";
+        String sql = "INSERT INTO \"user\" (name, userLevel) VALUES (?,?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         PreparedStatementCreator psc = connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -77,7 +80,8 @@ public class UserDao {
     }
 
     public boolean updateUser(User user, Integer id) {
-        String sql = "UPDATE user SET name=?, userLevel=? WHERE id=?";
+        String sql = "UPDATE \"user\" SET name=?, userLevel=? WHERE id=?";
+        //String sql = "UPDATE user SET name=?, userLevel=? WHERE id=?";
         int onnistui = jdbcTemplate.update(sql, new Object[]{user.getName(), user.getUserLevel(), id});
         if (onnistui > 0) {
             return true;
@@ -86,7 +90,8 @@ public class UserDao {
     }
 
     public boolean deleteUser(Integer id) {
-        String sql = "DELETE FROM user WHERE id=?;";
+        String sql = "DELETE FROM \"user\" WHERE id=?;";
+        //String sql = "DELETE FROM user WHERE id=?;";
         int onnistui = jdbcTemplate.update(sql, new Object[]{id});
         if (onnistui > 0) {
             return true;

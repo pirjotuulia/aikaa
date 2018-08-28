@@ -32,7 +32,7 @@ public class EventDao {
 
     public Event oneEventWithWorks(int eventId) {
         Event event = oneEvent(eventId);
-        String sql = "SELECT work.* FROM eventwork JOIN event, work WHERE eventId =? AND eventwork.eventId = event.id AND eventwork.workId = work.id;";
+        String sql = "SELECT work.* FROM eventwork JOIN event ON eventwork.eventId = event.id JOIN work ON eventwork.workId = work.id WHERE eventId =?;";
         List<Work> workList = jdbcTemplate.query(sql, new Object[]{eventId}, new BeanPropertyRowMapper(Work.class));
         event.setWorks(workList);
         return event;

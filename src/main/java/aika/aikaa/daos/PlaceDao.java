@@ -26,13 +26,13 @@ public class PlaceDao {
     }
 
     public List<Place> listOfAllPlaces() {
-        String sql = "SELECT place.*, address.streetaddress, address.postcode, address.country, address.district FROM place JOIN address WHERE place.addressId = address.id;";
+        String sql = "SELECT place.*, address.streetaddress, address.postcode, address.country, address.district FROM place JOIN address ON place.addressid = address.id;";
         List<Place> placeList = jdbcTemplate.query(sql, new PlaceMapper());
         return placeList;
     }
 
     public Place onePlace(Integer id) {
-        String sql = "SELECT place.*, address.streetaddress, address.postcode, address.country, address.district FROM place JOIN address WHERE place.id=? AND place.addressId = address.id;";
+        String sql = "SELECT place.*, address.streetaddress, address.postcode, address.country, address.district FROM place JOIN address ON place.addressId = address.id WHERE place.id=?;";
         Place place = (Place) jdbcTemplate.queryForObject(sql, new Object[]{id}, new PlaceMapper());
         return place;
     }
@@ -116,7 +116,7 @@ public class PlaceDao {
             place.setId(rs.getInt("id"));
             place.setName(rs.getString("name"));
             place.setAddress(new Address());
-            place.getAddress().setId(rs.getInt("addressId"));
+            place.getAddress().setId(rs.getInt("addressid"));
             place.getAddress().setStreetAddress(rs.getString("streetaddress"));
             place.getAddress().setPostcode(rs.getString("postcode"));
             place.getAddress().setCountry(rs.getString("country"));

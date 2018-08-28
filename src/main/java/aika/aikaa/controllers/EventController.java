@@ -23,7 +23,7 @@ public class EventController{
 
     @GetMapping("/api/events/{id}")
     public Event oneEventById(@PathVariable Integer id) {
-        return ed.oneEvent(id);
+        return ed.oneEventWithEverything(id);
     }
 
     @PostMapping("/api/events")

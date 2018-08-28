@@ -24,14 +24,14 @@ public class RoleDao {
     }
 
     public List<Role> allRoles() {
-        String sql = "SELECT role.*, rolecategory.name as category FROM role JOIN rolecategory WHERE role.categoryId = rolecategory.id;";
+        String sql = "SELECT role.*, rolecategory.name as category FROM role JOIN rolecategory ON role.categoryId = rolecategory.id;";
         List<Role> roleList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(Role.class));
         Collections.sort(roleList);
         return roleList;
     }
 
     public Role oneRole(Integer id) {
-        String sql = "SELECT role.*, rolecategory.name as category FROM role JOIN rolecategory WHERE role.id=? AND role.categoryId = rolecategory.id";
+        String sql = "SELECT role.*, rolecategory.name as category FROM role JOIN rolecategory ON role.categoryId = rolecategory.id WHERE role.id=?";
         Role role = (Role) jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper(Role.class));
         return role;
     }
