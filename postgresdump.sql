@@ -15,36 +15,6 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: DATABASE postgres; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON DATABASE postgres IS 'default administrative connection database';
-
-
---
--- Name: daa; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA daa;
-
-
-ALTER SCHEMA daa OWNER TO postgres;
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -58,7 +28,7 @@ CREATE TABLE public.address (
     streetaddress character varying(255),
     postcode character varying(255),
     country character varying(255),
-    district character varying(255)
+    city character varying(255)
 );
 
 
@@ -270,7 +240,8 @@ CREATE TABLE public.subevent (
     "end" timestamp without time zone,
     placeid integer,
     eventid integer,
-    type character varying(255)
+    type character varying(255),
+    workid integer
 );
 
 
@@ -342,7 +313,9 @@ ALTER SEQUENCE public.subeventcast_id_seq OWNED BY public.subeventcast.id;
 CREATE TABLE public."user" (
     id integer NOT NULL,
     name character varying(255),
-    userlevel integer
+    userlevel integer,
+    googleid character varying(255),
+    email character varying(255)
 );
 
 
@@ -524,11 +497,11 @@ ALTER TABLE ONLY public.work ALTER COLUMN id SET DEFAULT nextval('public.work_id
 -- Data for Name: address; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.address (id, streetaddress, postcode, country, district) FROM stdin;
-1	Keikkatie 1	00000 Tyrnävä	Suomi	Pohojammaa
-2	Harjoituskatu 2	00010 Tyrnävä	Suomi	Pohojammaa
-3	Kirkkokuja 4	00030 Tyrnävä	Suomi	Pohojammaa
+COPY public.address (id, streetaddress, postcode, country, city) FROM stdin;
 4	Tie 1	00030	Maa	Ei
+3	Kirkkokuja 4	00030	Suomi	Tyrnävä
+1	Keikkatie 1	00000	Suomi	Tyrnävä
+2	Harjoituskatu 2	00010	Suomi	Tyrnävä
 \.
 
 
@@ -595,6 +568,7 @@ COPY public.role (id, name, categoryid) FROM stdin;
 15	Tenori	7
 16	Tenorisaksofonisti	2
 17	Cornisti	3
+18	SuperAdmin	9
 \.
 
 
@@ -619,7 +593,14 @@ COPY public.rolecategory (id, name) FROM stdin;
 -- Data for Name: subevent; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.subevent (id, name, begin, "end", placeid, eventid, type) FROM stdin;
+COPY public.subevent (id, name, begin, "end", placeid, eventid, type, workid) FROM stdin;
+2	konsertti 1	2019-07-06 19:00:00	2019-07-06 21:00:00	1	1	konsertti	\N
+4	poissa	2019-07-06 00:00:00	2019-07-06 15:00:00	\N	3	poissaolo	\N
+3	harjoitus	2019-07-05 11:00:00	2019-07-05 13:00:00	2	1	harjoitus	1
+1	saliharjoitus	2019-07-06 15:30:00	2019-07-06 17:15:00	1	1	harjoitus	3
+5	harjoitus	2019-07-05 13:00:00	2019-07-05 15:00:00	2	1	harjoitus	3
+6	saliharjoitus	2019-07-06 17:15:00	2019-07-06 18:00:00	1	1	harjoitus	1
+7	saliharjoitus	2019-07-06 15:00:00	2019-07-06 15:30:00	1	1	harjoitus	2
 \.
 
 
@@ -628,6 +609,19 @@ COPY public.subevent (id, name, begin, "end", placeid, eventid, type) FROM stdin
 --
 
 COPY public.subeventcast (id, subeventid, userid, roleid, workid) FROM stdin;
+1	3	1	1	1
+2	3	2	1	1
+3	3	3	3	1
+4	3	4	4	1
+13	\N	\N	\N	\N
+5	5	1	1	3
+8	5	4	4	3
+7	5	3	3	3
+6	5	2	1	3
+10	5	6	6	3
+9	5	5	5	3
+12	7	6	6	2
+11	7	5	5	2
 \.
 
 
@@ -635,20 +629,21 @@ COPY public.subeventcast (id, subeventid, userid, roleid, workid) FROM stdin;
 -- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."user" (id, name, userlevel) FROM stdin;
-1	Muusikko1	3
-2	Muusikko2	3
-3	Muusikko3	3
-4	Muusikko4	3
-5	Muusikko5	3
-6	Muusikko6	3
-7	Muusikko7	3
-8	Muusikko8	3
-9	SuperAdmin	1
-10	Admin	2
-11	Järjestäjä	3
-12	Konserttisihteeri	2
-13	Muusikko10	3
+COPY public."user" (id, name, userlevel, googleid, email) FROM stdin;
+1	Muusikko1	3	\N	\N
+2	Muusikko2	3	\N	\N
+3	Muusikko3	3	\N	\N
+4	Muusikko4	3	\N	\N
+5	Muusikko5	3	\N	\N
+6	Muusikko6	3	\N	\N
+7	Muusikko7	3	\N	\N
+8	Muusikko8	3	\N	\N
+9	SuperAdmin	1	\N	\N
+10	Admin	2	\N	\N
+11	Järjestäjä	3	\N	\N
+12	Konserttisihteeri	2	\N	\N
+13	Muusikko10	3	\N	\N
+14	Pirjo Leppänen	1	110922832614819859477	pirjotuulia74@gmail.com
 \.
 
 
@@ -669,6 +664,7 @@ COPY public.userrole (id, roleid, userid) FROM stdin;
 35	11	8
 36	2	4
 37	17	13
+38	18	14
 \.
 
 
@@ -715,7 +711,7 @@ SELECT pg_catalog.setval('public.place_id_seq', 3, true);
 -- Name: role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.role_id_seq', 17, true);
+SELECT pg_catalog.setval('public.role_id_seq', 18, true);
 
 
 --
@@ -729,28 +725,28 @@ SELECT pg_catalog.setval('public.rolecategory_id_seq', 9, true);
 -- Name: subevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.subevent_id_seq', 1, false);
+SELECT pg_catalog.setval('public.subevent_id_seq', 7, true);
 
 
 --
 -- Name: subeventcast_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.subeventcast_id_seq', 1, false);
+SELECT pg_catalog.setval('public.subeventcast_id_seq', 13, true);
 
 
 --
 -- Name: user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_id_seq', 13, true);
+SELECT pg_catalog.setval('public.user_id_seq', 14, true);
 
 
 --
 -- Name: userrole_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.userrole_id_seq', 37, true);
+SELECT pg_catalog.setval('public.userrole_id_seq', 38, true);
 
 
 --
@@ -971,6 +967,14 @@ ALTER TABLE ONLY public.subevent
 
 ALTER TABLE ONLY public.subevent
     ADD CONSTRAINT subevent_place_id_fk FOREIGN KEY (placeid) REFERENCES public.place(id);
+
+
+--
+-- Name: subevent subevent_work_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.subevent
+    ADD CONSTRAINT subevent_work_id_fk FOREIGN KEY (workid) REFERENCES public.work(id);
 
 
 --

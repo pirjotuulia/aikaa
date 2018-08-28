@@ -15,6 +15,24 @@ public class User {
     private String name;
     private Integer userLevel;
     private List<Role> roles;
+    private String googleid;
+    private String email;
+
+    public String getGoogleid() {
+        return googleid;
+    }
+
+    public void setGoogleid(String googleid) {
+        this.googleid = googleid;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public User(String name, Integer userLevel, List<Role> roles) {
         this.name = name;
