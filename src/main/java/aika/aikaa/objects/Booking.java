@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 public class Booking {
 
     private int id;//subeventcastid
+    private int eventid;
+    private int subeventid;
     private String type;
     private LocalDateTime begin;
     private LocalDateTime end;
@@ -18,6 +20,22 @@ public class Booking {
     private String placename;
 
     public Booking() {
+    }
+
+    public int getEventid() {
+        return eventid;
+    }
+
+    public void setEventid(int eventid) {
+        this.eventid = eventid;
+    }
+
+    public int getSubeventid() {
+        return subeventid;
+    }
+
+    public void setSubeventid(int subeventid) {
+        this.subeventid = subeventid;
     }
 
     public int getId() {

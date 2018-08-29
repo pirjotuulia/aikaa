@@ -17,40 +17,39 @@ public class BookingDao {
     }
 
     public List<Booking> allBookings() {
-        String sql = "SELECT subeventcast.id, subevent.name as name, subevent.type as type, " +
+        String sql = "SELECT event.id as eventid, subeventcast.id as id, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
                 "subevent.begin as begin, subevent.end as end, \"user\".name as username, \"user\".id as userid, " +
                 "role.name as rolename, work.work as workname, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
                 " JOIN role ON role.id = subeventcast.roleid" +
                 " JOIN work ON work.id = subeventcast.workid" +
-                " JOIN place ON place.id = subevent.placeid;";
+                " JOIN place ON place.id = subevent.placeid" +
+                " JOIN event ON subevent.eventid = event.id ;";
         List<Booking> bookingList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(Booking.class));
         return bookingList;
     }
 
     public List<Booking> userBookings(Integer id) {
-        String sql = "SELECT subeventcast.id, subevent.name as name, subevent.type as type, " +
+        String sql = "SELECT event.id as eventid, subeventcast.id as id, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
                 "subevent.begin as begin, subevent.end as end, \"user\".name as username, \"user\".id as userid, " +
                 "role.name as rolename, work.work as workname, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
                 " JOIN role ON role.id = subeventcast.roleid" +
                 " JOIN work ON work.id = subeventcast.workid" +
-                " JOIN place ON place.id = subevent.placeid WHERE subeventcast.userid=?;";
+                " JOIN place ON place.id = subevent.placeid " +
+                " JOIN event ON subevent.eventid = event.id WHERE subeventcast.userid=?;";
         List<Booking> bookingList = jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper(Booking.class));
         return bookingList;
     }
 
     public List<Booking> placeBookings(Integer id) {
-        String sql = "SELECT subeventcast.id, subevent.name as name, subevent.type as type, " +
-                "subevent.begin as begin, subevent.end as end, \"user\".name as username, \"user\".id as userid, " +
-                "role.name as rolename, work.work as workname, place.name as placename" +
+        String sql = "SELECT DISTINCT event.id as eventid, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
+                "subevent.begin as begin, subevent.end as end, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
-                " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
-                " JOIN role ON role.id = subeventcast.roleid" +
-                " JOIN work ON work.id = subeventcast.workid" +
-                " JOIN place ON place.id = subevent.placeid WHERE place.id=?;";
+                " JOIN place ON place.id = subevent.placeid" +
+                " JOIN event ON subevent.eventid = event.id WHERE place.id=?;";
         List<Booking> bookingList = jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper(Booking.class));
         return bookingList;
     }
