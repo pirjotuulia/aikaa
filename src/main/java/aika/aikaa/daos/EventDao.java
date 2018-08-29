@@ -40,7 +40,7 @@ public class EventDao {
 
     public Event oneEventWithEverything(int eventId) {
         Event event = oneEventWithWorks(eventId);
-        event.setSubEvents(listOfSubEvents(eventId));
+        event.setSubEvents(listOfSubEventsByEventId(eventId));
         return event;
     }
 
@@ -50,8 +50,23 @@ public class EventDao {
         return eventList;
     }
 
-    public List<SubEvent> listOfSubEvents(int eventId) {
-        String sql = "SELECT subevent.*, place.name as place FROM subevent JOIN place ON place.id = subevent.placeid WHERE eventid=?";
+    public SubEvent oneSubEventById(Integer id) {
+        String sql = "SELECT subevent.*, place.name as place FROM subevent " +
+                "JOIN place ON place.id = subevent.placeid " +
+                "WHERE subevent.id=?;";
+        SubEvent subEvent = (SubEvent)jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper(SubEvent.class));
+        return subEvent;
+    }
+
+    public List<SubEvent> allSubEvents() {
+        String sql = "SELECT subevent.*, place.name as place FROM subevent " +
+                "JOIN place ON place.id = subevent.placeid;";
+        List<SubEvent> subEventList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(SubEvent.class));
+        return subEventList;
+    }
+
+    public List<SubEvent> listOfSubEventsByEventId(int eventId) {
+        String sql = "SELECT subevent.*, place.name as place FROM subevent JOIN place ON place.id = subevent.placeid WHERE eventid=?;";
         List<SubEvent> subEventList = jdbcTemplate.query(sql, new Object[]{eventId}, new BeanPropertyRowMapper(SubEvent.class));
         return subEventList;
     }
@@ -80,7 +95,7 @@ public class EventDao {
     }
 
     public boolean updateEvent(Event event, Integer id) {
-        String sql = "UPDATE event SET name=? WHERE id=?";
+        String sql = "UPDATE event SET name=? WHERE id=?;";
         int onnistui = jdbcTemplate.update(sql, new Object[]{event.getName(), id});
         if (onnistui > 0) {
             return true;
@@ -89,7 +104,48 @@ public class EventDao {
     }
 
     public boolean deleteEvent(Integer id) {
-        String sql = "DELETE FROM event WHERE id=?";
+        String sql = "DELETE FROM event WHERE id=?;";
+        int onnistui = jdbcTemplate.update(sql, id);
+        if (onnistui > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public SubEvent createSubEvent(SubEvent newSubEvent) {
+        String sql = "INSERT INTO subevent (name, begin, end, placeid, eventid, type, workid) VALUES (?,?,?,?,?,?,?);";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        PreparedStatementCreator psc = connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, newSubEvent.getName());
+            ps.setString(2, newSubEvent.getBegin().toString());
+            ps.setString(3, newSubEvent.getEnd().toString());
+            ps.setInt(4, newSubEvent.getPlace().getId());
+            ps.setInt(5, newSubEvent.getEvent().getId());
+            ps.setString(6, newSubEvent.getType());
+            ps.setInt(7, newSubEvent.getWork().getId());
+            return ps;
+        };
+        int onnistui = jdbcTemplate.update(psc, keyHolder);
+        if (onnistui > 0) {
+            int id = keyHolder.getKey().intValue();
+            newSubEvent.setId(id);
+        }
+        return newSubEvent;
+    }
+
+    public boolean updateSubEvent(SubEvent subEvent, Integer id) {
+        String sql = "UPDATE subevent SET name=?, begin=?, end=?, placeid=?, eventid=?, type=?, workid=? WHERE id=?;";
+        int onnistui = jdbcTemplate.update(sql, new Object[]{subEvent.getName(), subEvent.getBegin().toString(), subEvent.getEnd().toString(),
+                subEvent.getPlace().getId(), subEvent.getEvent().getId(), subEvent.getType(), subEvent.getWork().getId(), id});
+        if (onnistui > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteSubEvent(Integer id) {
+        String sql = "DELETE FROM subevent WHERE id=?;";
         int onnistui = jdbcTemplate.update(sql, id);
         if (onnistui > 0) {
             return true;

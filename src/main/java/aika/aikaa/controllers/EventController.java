@@ -2,6 +2,7 @@ package aika.aikaa.controllers;
 
 import aika.aikaa.daos.EventDao;
 import aika.aikaa.objects.Event;
+import aika.aikaa.objects.SubEvent;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
@@ -39,5 +40,30 @@ public class EventController{
     @DeleteMapping("/api/events/{id}")
     public boolean deleteEvent(@PathVariable Integer id) {
         return ed.deleteEvent(id);
+    }
+
+    @GetMapping("/api/subevents")
+    public List<SubEvent> allSubEvents() {
+        return ed.allSubEvents();
+    }
+
+    @GetMapping("/api/subevents/{id}")
+    public SubEvent oneSubEventById(@PathVariable Integer id) {
+        return ed.oneSubEventById(id);
+    }
+
+    @PostMapping("/api/subevents")
+    public SubEvent createSubEvent(@RequestBody SubEvent subEvent) {
+        return ed.createSubEvent(subEvent);
+    }
+
+    @PutMapping("/api/subevents/{id}")
+    public boolean updateSubEvent(@RequestBody SubEvent subEvent, @PathVariable Integer id) {
+        return ed.updateSubEvent(subEvent, id);
+    }
+
+    @DeleteMapping("/api/subevents/{id}")
+    public boolean deleteSubEvent(@PathVariable Integer id) {
+        return ed.deleteSubEvent(id);
     }
 }
