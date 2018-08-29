@@ -4,10 +4,9 @@ import aika.aikaa.daos.BookingDao;
 import aika.aikaa.daos.UserDao;
 import aika.aikaa.objects.Booking;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,6 +25,14 @@ public class BookingController {
     @GetMapping("/api/bookings/user/{id}")
     public List<Booking> userBookings(@PathVariable Integer id) {
         return bd.userBookings(id);
+    }
+
+    @GetMapping("/api/bookings/day/{target}/{targetid}")// "2019-07-05"
+    public List<Booking> userBookingsByDay(@RequestParam String day, @PathVariable String target, @PathVariable Integer targetid) {
+        if (target.equals("user")) {
+            return bd.userBookingsByDay(day, targetid);
+        }
+        return null;
     }
 
     @GetMapping("/api/bookings/place/{id}")
