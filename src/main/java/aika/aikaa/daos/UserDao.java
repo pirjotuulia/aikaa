@@ -44,6 +44,17 @@ public class UserDao {
         return user;
     }
 
+    public User oneUserByName(String userName) {
+        String sql = "SELECT * from \"user\" WHERE name=?";
+        User user = (User) jdbcTemplate.queryForObject(sql, new Object[]{userName}, new BeanPropertyRowMapper(User.class));
+        return user;
+    }
+    public User oneUserByEmail(String userEmail) {
+        String sql = "SELECT * from \"user\" WHERE email=?";
+        User user = (User) jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new BeanPropertyRowMapper(User.class));
+        return user;
+    }
+
     public List<Role> usersRoles(int userId) {
         String sql = "SELECT role.*, rolecategory.name as category from userrole JOIN \"user\" ON \"user\".id = userrole.userId JOIN role ON role.id = userrole.roleId JOIN rolecategory ON role.categoryId = rolecategory.id WHERE userrole.userId=?;";
         //String sql = "SELECT role.*, rolecategory.name as category from userrole JOIN user ON user.id = userrole.userId JOIN role ON role.id = userrole.roleId JOIN rolecategory ON role.categoryId = rolecategory.id WHERE userrole.userId=?;";

@@ -18,22 +18,6 @@ public class User {
     private String googleid;
     private String email;
 
-    public String getGoogleid() {
-        return googleid;
-    }
-
-    public void setGoogleid(String googleid) {
-        this.googleid = googleid;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public User(String name, Integer userLevel, List<Role> roles) {
         this.name = name;
         this.userLevel = userLevel;
@@ -65,6 +49,40 @@ public class User {
 
     public Integer getUserLevel() {
         return userLevel;
+    }
+
+    public List<String> getUserLevelAsString() {
+        List<String> userLevels = new ArrayList<>();
+        if (userLevel>3) {
+            userLevels.add("ROLE_GUEST");
+        }
+        if (userLevel <= 3) {
+            userLevels.add("ROLE_USER");
+        }
+        if (userLevel <= 2) {
+            userLevels.add("ROLE_ADMIN");
+        }
+        if (userLevel <= 1) {
+            userLevels.add("ROLE_SUPERADMIN");
+        }
+        return userLevels;
+    }
+
+
+    public String getGoogleid() {
+        return googleid;
+    }
+
+    public void setGoogleid(String googleid) {
+        this.googleid = googleid;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setUserLevel(Integer userLevel) {

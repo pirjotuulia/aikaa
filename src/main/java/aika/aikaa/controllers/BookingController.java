@@ -27,4 +27,9 @@ public class BookingController {
     public List<Booking> userBookings(@PathVariable Integer id) {
         return bd.userBookings(id);
     }
+
+    @GetMapping("/api/bookings/place/{id}")
+    public List<Booking> placeBookings(@PathVariable Integer id) {
+        return bd.placeBookings(id);
+    }
 }
