@@ -62,7 +62,7 @@ public class User {
         if (userLevel <= 2) {
             userLevels.add("ROLE_ADMIN");
         }
-        if (userLevel <= 1) {
+        if (userLevel == 1) {
             userLevels.add("ROLE_SUPERADMIN");
         }
         return userLevels;

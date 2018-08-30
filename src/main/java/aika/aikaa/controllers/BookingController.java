@@ -4,12 +4,14 @@ import aika.aikaa.daos.BookingDao;
 import aika.aikaa.daos.UserDao;
 import aika.aikaa.objects.Booking;
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+//@PreAuthorize("hasAuthority('ROLE_SUPERADMIN') or hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
 public class BookingController {
     private BookingDao bd;
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -66,6 +67,44 @@ public class WorkDao {
         String sql = "DELETE FROM work WHERE id=?";
         int onnistui = jdbcTemplate.update(sql, id);
         if (onnistui > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addWorkRole(Integer workid, Integer roleid) {
+        String sql = "INSERT INTO workrole (workid, roleid) VALUES (?,?);";
+        int onnistui = jdbcTemplate.update(sql, new Object[]{workid, roleid});
+        if (onnistui > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addAllWorkRoles(Integer workid, List<Integer> roleids) {
+        List<Object[]> parameterList = new ArrayList<>();
+        roleids.stream().forEach(rid-> parameterList.add(new Object[]{workid, rid}));
+        String sql = "INSERT INTO workrole (workid, roleid) VALUES (?,?)";
+        int onnistui = jdbcTemplate.update(sql, parameterList);
+        if (onnistui == roleids.size()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean modifyWorkRole(Integer workid, Integer previousRoleid, Integer newRoleid) {
+        String sql = "UPDATE workrole SET roleid=? WHERE workid=? AND roleid=?";
+        int onnistui = jdbcTemplate.update(sql, new Object[]{newRoleid, workid, previousRoleid});
+        if (onnistui == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteWorkRole(Integer workid, Integer roleid) {
+        String sql = "DELETE FROM workrole WHERE workid=? AND roleid=?";
+        int onnistui = jdbcTemplate.update(sql, new Object[]{workid, roleid});
+        if (onnistui == 1) {
             return true;
         }
         return false;
