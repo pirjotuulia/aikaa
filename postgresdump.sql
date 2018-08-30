@@ -57,6 +57,54 @@ ALTER SEQUENCE public.address_id_seq OWNED BY public.address.id;
 
 
 --
+-- Name: appuser; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.appuser (
+    id integer NOT NULL,
+    username character varying(255),
+    email character varying(255),
+    password character varying(255)
+);
+
+
+ALTER TABLE public.appuser OWNER TO postgres;
+
+--
+-- Name: appuser_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.appuser_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.appuser_id_seq OWNER TO postgres;
+
+--
+-- Name: appuser_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.appuser_id_seq OWNED BY public.appuser.id;
+
+
+--
+-- Name: appuserrole; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.appuserrole (
+    userid integer,
+    userrole character varying(255)
+);
+
+
+ALTER TABLE public.appuserrole OWNER TO postgres;
+
+--
 -- Name: event; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -278,7 +326,8 @@ CREATE TABLE public.subeventcast (
     subeventid integer,
     userid integer,
     roleid integer,
-    workid integer
+    workid integer,
+    workroleid integer
 );
 
 
@@ -315,7 +364,8 @@ CREATE TABLE public."user" (
     name character varying(255),
     userlevel integer,
     googleid character varying(255),
-    email character varying(255)
+    email character varying(255),
+    password character varying(255)
 );
 
 
@@ -417,10 +467,53 @@ ALTER SEQUENCE public.work_id_seq OWNED BY public.work.id;
 
 
 --
+-- Name: workrole; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.workrole (
+    id integer NOT NULL,
+    workid integer,
+    roleid integer,
+    number integer
+);
+
+
+ALTER TABLE public.workrole OWNER TO postgres;
+
+--
+-- Name: workrole_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.workrole_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.workrole_id_seq OWNER TO postgres;
+
+--
+-- Name: workrole_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.workrole_id_seq OWNED BY public.workrole.id;
+
+
+--
 -- Name: address id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.address ALTER COLUMN id SET DEFAULT nextval('public.address_id_seq'::regclass);
+
+
+--
+-- Name: appuser id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.appuser ALTER COLUMN id SET DEFAULT nextval('public.appuser_id_seq'::regclass);
 
 
 --
@@ -494,6 +587,13 @@ ALTER TABLE ONLY public.work ALTER COLUMN id SET DEFAULT nextval('public.work_id
 
 
 --
+-- Name: workrole id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.workrole ALTER COLUMN id SET DEFAULT nextval('public.workrole_id_seq'::regclass);
+
+
+--
 -- Data for Name: address; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -502,6 +602,27 @@ COPY public.address (id, streetaddress, postcode, country, city) FROM stdin;
 3	Kirkkokuja 4	00030	Suomi	Tyrnävä
 1	Keikkatie 1	00000	Suomi	Tyrnävä
 2	Harjoituskatu 2	00010	Suomi	Tyrnävä
+\.
+
+
+--
+-- Data for Name: appuser; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.appuser (id, username, email, password) FROM stdin;
+1	Pirjo Leppänen	pirjotuulia74@gmail.com	$2a$10$IBLFLBzDMgtsdp2MrwJBIeUoInL6ZqMXCAsmxPIuni0lLiNzgijY6
+3	Mikko Kallio	mikko.m.kallio	$2a$10$r2kCrAkyTX1bvBaQ6onLg.Q4EDFTn0WKe3U6yGunQE1Zbtk2yxNZi
+5	Heponen	heponen@ihanuusvirasto.com	$2a$10$Tvx0RUNrz0wKbg6nEwWpu.oCpn3TaYN7iS2jP/DxgVESiwYwbWkIu
+\.
+
+
+--
+-- Data for Name: appuserrole; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.appuserrole (userid, userrole) FROM stdin;
+1	ROLE_SUPERADMIN
+2	ROLE_SUPERADMIN
 \.
 
 
@@ -551,24 +672,24 @@ COPY public.place (id, name, addressid) FROM stdin;
 --
 
 COPY public.role (id, name, categoryid) FROM stdin;
-1	Viulisti	1
 2	Sopraano	7
-3	Alttoviulisti	1
-4	Sellisti	1
 5	Mezzosopraano	7
-6	Pianisti	6
 7	Konserttisihteeri	9
 8	Järjestäjä	9
 9	Autonkuljettaja	9
-10	Kontrabasisti	1
-11	Lyömäsoittaja	4
-12	Klarinetisti	2
 13	Sivunkääntäjä	9
 14	Pianonvirittäjä	9
 15	Tenori	7
-16	Tenorisaksofonisti	2
-17	Cornisti	3
 18	SuperAdmin	9
+12	Klarinetti	2
+17	Käyrätorvi	3
+1	Viulu	1
+3	Alttoviulu	1
+6	Piano	6
+11	Lyömäsoittimet	4
+4	Sello	1
+16	Tenorisaksofoni	2
+10	Kontrabasso	1
 \.
 
 
@@ -608,20 +729,33 @@ COPY public.subevent (id, name, begin, "end", placeid, eventid, type, workid) FR
 -- Data for Name: subeventcast; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.subeventcast (id, subeventid, userid, roleid, workid) FROM stdin;
-1	3	1	1	1
-2	3	2	1	1
-3	3	3	3	1
-4	3	4	4	1
-13	\N	\N	\N	\N
-5	5	1	1	3
-8	5	4	4	3
-7	5	3	3	3
-6	5	2	1	3
-10	5	6	6	3
-9	5	5	5	3
-12	7	6	6	2
-11	7	5	5	2
+COPY public.subeventcast (id, subeventid, userid, roleid, workid, workroleid) FROM stdin;
+2	3	2	1	1	1
+1	3	1	1	1	1
+3	3	3	3	1	4
+4	3	4	4	1	5
+19	2	1	1	1	1
+20	2	2	1	1	1
+22	2	4	4	1	5
+21	2	3	3	1	4
+24	2	6	6	2	4
+23	2	5	5	2	2
+12	7	6	6	2	3
+11	7	5	5	2	2
+7	5	3	3	3	7
+5	5	1	1	3	6
+10	5	6	6	3	10
+18	2	6	6	3	10
+6	5	2	1	3	6
+9	5	5	5	3	9
+15	2	3	3	3	7
+13	2	1	1	3	6
+8	5	4	4	3	8
+14	2	2	1	3	6
+17	2	5	5	3	9
+16	2	4	4	3	8
+26	2	12	\N	\N	5
+25	2	11	\N	\N	4
 \.
 
 
@@ -629,21 +763,22 @@ COPY public.subeventcast (id, subeventid, userid, roleid, workid) FROM stdin;
 -- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."user" (id, name, userlevel, googleid, email) FROM stdin;
-1	Muusikko1	3	\N	\N
-2	Muusikko2	3	\N	\N
-3	Muusikko3	3	\N	\N
-4	Muusikko4	3	\N	\N
-5	Muusikko5	3	\N	\N
-6	Muusikko6	3	\N	\N
-7	Muusikko7	3	\N	\N
-8	Muusikko8	3	\N	\N
-9	SuperAdmin	1	\N	\N
-10	Admin	2	\N	\N
-11	Järjestäjä	3	\N	\N
-12	Konserttisihteeri	2	\N	\N
-13	Muusikko10	3	\N	\N
-14	Pirjo Leppänen	1	110922832614819859477	pirjotuulia74@gmail.com
+COPY public."user" (id, name, userlevel, googleid, email, password) FROM stdin;
+1	Muusikko1	3	\N	\N	\N
+2	Muusikko2	3	\N	\N	\N
+3	Muusikko3	3	\N	\N	\N
+4	Muusikko4	3	\N	\N	\N
+5	Muusikko5	3	\N	\N	\N
+6	Muusikko6	3	\N	\N	\N
+7	Muusikko7	3	\N	\N	\N
+8	Muusikko8	3	\N	\N	\N
+9	SuperAdmin	1	\N	\N	\N
+10	Admin	2	\N	\N	\N
+11	Järjestäjä	3	\N	\N	\N
+12	Konserttisihteeri	2	\N	\N	\N
+13	Muusikko10	3	\N	\N	\N
+14	Pirjo Leppänen	1	110922832614819859477	pirjotuulia74@gmail.com	\N
+15	Mikko Kallio	1	\N	mikko.m.kallio@gmail.com	\N
 \.
 
 
@@ -676,6 +811,28 @@ COPY public.work (id, work, composer, instrumentation, musicians, durationinminu
 1	Jousikvartetto	Schumann	2vl, 1vla, 1vcl	4	32
 2	Gretchen am Spinnrade	Schubert	1s, 1pf	2	5
 3	Tilausteos	Nuori säveltäjä	1s, 2vl, 1vla, 1vcl, 1pf	6	35
+4	Roudaus	\N	lavajärjestäjä	0	\N
+5	Kukat, kuulutukset	\N	konserttisihteeri	0	\N
+\.
+
+
+--
+-- Data for Name: workrole; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.workrole (id, workid, roleid, number) FROM stdin;
+1	1	1	2
+3	2	6	1
+4	1	3	1
+5	1	4	1
+6	3	1	2
+7	3	3	1
+8	3	4	1
+10	3	6	1
+11	4	8	1
+12	5	7	1
+2	2	5	1
+9	3	5	1
 \.
 
 
@@ -684,6 +841,13 @@ COPY public.work (id, work, composer, instrumentation, musicians, durationinminu
 --
 
 SELECT pg_catalog.setval('public.address_id_seq', 1, false);
+
+
+--
+-- Name: appuser_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.appuser_id_seq', 5, true);
 
 
 --
@@ -732,14 +896,14 @@ SELECT pg_catalog.setval('public.subevent_id_seq', 7, true);
 -- Name: subeventcast_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.subeventcast_id_seq', 13, true);
+SELECT pg_catalog.setval('public.subeventcast_id_seq', 26, true);
 
 
 --
 -- Name: user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_id_seq', 14, true);
+SELECT pg_catalog.setval('public.user_id_seq', 15, true);
 
 
 --
@@ -753,7 +917,14 @@ SELECT pg_catalog.setval('public.userrole_id_seq', 38, true);
 -- Name: work_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.work_id_seq', 3, true);
+SELECT pg_catalog.setval('public.work_id_seq', 5, true);
+
+
+--
+-- Name: workrole_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.workrole_id_seq', 12, true);
 
 
 --
@@ -762,6 +933,14 @@ SELECT pg_catalog.setval('public.work_id_seq', 3, true);
 
 ALTER TABLE ONLY public.address
     ADD CONSTRAINT address_pk PRIMARY KEY (id);
+
+
+--
+-- Name: appuser appuser_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.appuser
+    ADD CONSTRAINT appuser_pkey PRIMARY KEY (id);
 
 
 --
@@ -845,10 +1024,39 @@ ALTER TABLE ONLY public.work
 
 
 --
+-- Name: workrole workrole_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.workrole
+    ADD CONSTRAINT workrole_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: address_id_uindex; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE UNIQUE INDEX address_id_uindex ON public.address USING btree (id);
+
+
+--
+-- Name: appuser_email_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX appuser_email_uindex ON public.appuser USING btree (email);
+
+
+--
+-- Name: appuser_id_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX appuser_id_uindex ON public.appuser USING btree (id);
+
+
+--
+-- Name: appuser_username_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX appuser_username_uindex ON public.appuser USING btree (username);
 
 
 --
@@ -919,6 +1127,13 @@ CREATE UNIQUE INDEX userrole_id_uindex ON public.userrole USING btree (id);
 --
 
 CREATE UNIQUE INDEX work_id_uindex ON public.work USING btree (id);
+
+
+--
+-- Name: workrole_id_uindex; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX workrole_id_uindex ON public.workrole USING btree (id);
 
 
 --
@@ -1010,6 +1225,14 @@ ALTER TABLE ONLY public.subeventcast
 
 
 --
+-- Name: subeventcast subeventcast_workrole_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.subeventcast
+    ADD CONSTRAINT subeventcast_workrole_id_fk FOREIGN KEY (workroleid) REFERENCES public.workrole(id);
+
+
+--
 -- Name: userrole userrole_role_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1023,6 +1246,22 @@ ALTER TABLE ONLY public.userrole
 
 ALTER TABLE ONLY public.userrole
     ADD CONSTRAINT userrole_user_id_fk FOREIGN KEY (userid) REFERENCES public."user"(id);
+
+
+--
+-- Name: workrole workrole_role_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.workrole
+    ADD CONSTRAINT workrole_role_id_fk FOREIGN KEY (roleid) REFERENCES public.role(id);
+
+
+--
+-- Name: workrole workrole_work_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.workrole
+    ADD CONSTRAINT workrole_work_id_fk FOREIGN KEY (workid) REFERENCES public.work(id);
 
 
 --

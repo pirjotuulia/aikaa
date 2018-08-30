@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.persistence.Id;
+import java.util.List;
 
 @Component
 public class Work {
@@ -15,6 +16,7 @@ public class Work {
     private String Instrumentation;
     private Integer musicians;//minimum number of musicians needed;
     private Integer durationInMinutes;
+    private List<Role> roleList;
 
     public Work() {
     }
@@ -75,6 +77,14 @@ public class Work {
         this.durationInMinutes = durationInMinutes;
     }
 
+    public List<Role> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<Role> roleList) {
+        this.roleList = roleList;
+    }
+
     @Override
     public String toString() {
         return "Work{" +
@@ -84,6 +94,7 @@ public class Work {
                 ", Instrumentation='" + Instrumentation + '\'' +
                 ", musicians=" + musicians +
                 ", durationInMinutes=" + durationInMinutes +
+                ", roleList=" + roleList +
                 '}';
     }
 }

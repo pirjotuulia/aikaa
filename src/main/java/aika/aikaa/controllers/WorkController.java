@@ -16,8 +16,8 @@ public class WorkController {
     }
 
     @GetMapping("/api/works")
-    public List<Work> allWorks() {
-        return wd.allWorks();
+    public List<Work> allMusicalWorks() {
+        return wd.allMusicalWorks();
     }
 
     @GetMapping("/api/works/{id}")
@@ -38,5 +38,10 @@ public class WorkController {
     @DeleteMapping("/api/works/{id}")
     public boolean deleteWork(@PathVariable Integer id) {
         return wd.deleteWork(id);
+    }
+
+    @GetMapping("/api/workroles")
+    public List<Work> allWorksWithRoleDetails() {
+        return wd.allWorksWithRoleDetails();
     }
 }
