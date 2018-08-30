@@ -12,7 +12,7 @@ public class Booking {
     private int subeventid;
     private String type;
     private LocalDateTime begin;
-    private LocalDateTime end;
+    private LocalDateTime ending;
     private int userid;
     private String username;
     private String rolename;
@@ -62,12 +62,12 @@ public class Booking {
         this.begin = begin;
     }
 
-    public LocalDateTime getEnd() {
-        return end;
+    public LocalDateTime getEnding() {
+        return ending;
     }
 
-    public void setEnd(LocalDateTime end) {
-        this.end = end;
+    public void setEnding(LocalDateTime ending) {
+        this.ending = ending;
     }
 
     public int getUserid() {

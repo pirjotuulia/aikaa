@@ -3,6 +3,8 @@ package aika.aikaa.daos;
 import aika.aikaa.objects.Event;
 import aika.aikaa.objects.SubEvent;
 import aika.aikaa.objects.Work;
+import aika.aikaa.objects.dtos.SubEventDtoIn;
+import aika.aikaa.objects.dtos.SubEventDtoOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -54,14 +56,26 @@ public class EventDao {
         String sql = "SELECT subevent.*, place.name as place FROM subevent " +
                 "JOIN place ON place.id = subevent.placeid " +
                 "WHERE subevent.id=?;";
-        SubEvent subEvent = (SubEvent)jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper(SubEvent.class));
+        SubEvent subEvent = (SubEvent) jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper(SubEvent.class));
         return subEvent;
     }
 
-    public List<SubEvent> allSubEvents() {
-        String sql = "SELECT subevent.*, place.name as place FROM subevent " +
-                "JOIN place ON place.id = subevent.placeid;";
-        List<SubEvent> subEventList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(SubEvent.class));
+    public SubEventDtoOut oneSubEventDtoOutById(Integer id) {
+        String sql = "SELECT subevent.*, place.name as placename, event.name as eventname, work.work as workname FROM subevent " +
+                "JOIN place ON place.id = subevent.placeid " +
+                "JOIN event ON event.id = subevent.eventid " +
+                "JOIN work ON work.id = subevent.workid " +
+                "WHERE subevent.id=?;";
+        SubEventDtoOut subEventOut = (SubEventDtoOut) jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper(SubEventDtoOut.class));
+        return subEventOut;
+    }
+
+    public List<SubEventDtoOut> allSubEvents() {
+        String sql = "SELECT subevent.*, place.name as placename, event.name as eventname, work.work as workname FROM subevent " +
+                "JOIN place ON place.id = subevent.placeid " +
+                "JOIN event ON event.id = subevent.eventid " +
+                "JOIN work ON work.id = subevent.workid;";
+        List<SubEventDtoOut> subEventList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(SubEventDtoOut.class));
         return subEventList;
     }
 
@@ -113,32 +127,33 @@ public class EventDao {
         return false;
     }
 
-    public SubEvent createSubEvent(SubEvent newSubEvent) {
-        String sql = "INSERT INTO subevent (name, begin, end, placeid, eventid, type, workid) VALUES (?,?,?,?,?,?,?);";
+    public SubEvent createSubEvent(SubEventDtoIn newSubEvent) {
+        String sql = "INSERT INTO subevent (name, begin, ending, placeid, eventid, type, workid) VALUES (?,?,?,?,?,?,?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         PreparedStatementCreator psc = connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, newSubEvent.getName());
-            ps.setString(2, newSubEvent.getBegin().toString());
-            ps.setString(3, newSubEvent.getEnd().toString());
-            ps.setInt(4, newSubEvent.getPlace().getId());
-            ps.setInt(5, newSubEvent.getEvent().getId());
+            ps.setObject(2, newSubEvent.getBegin());
+            ps.setObject(3, newSubEvent.getEnding());
+            ps.setInt(4, newSubEvent.getPlaceId());
+            ps.setInt(5, newSubEvent.getEventId());
             ps.setString(6, newSubEvent.getType());
-            ps.setInt(7, newSubEvent.getWork().getId());
+            ps.setInt(7, newSubEvent.getWorkId());
             return ps;
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
+        SubEvent created = new SubEvent();
         if (onnistui > 0) {
             int id = (int) keyHolder.getKeys().get("id");
-            newSubEvent.setId(id);
+            created = oneSubEventById(id);
         }
-        return newSubEvent;
+        return created;
     }
 
-    public boolean updateSubEvent(SubEvent subEvent, Integer id) {
-        String sql = "UPDATE subevent SET name=?, begin=?, end=?, placeid=?, eventid=?, type=?, workid=? WHERE id=?;";
-        int onnistui = jdbcTemplate.update(sql, new Object[]{subEvent.getName(), subEvent.getBegin().toString(), subEvent.getEnd().toString(),
-                subEvent.getPlace().getId(), subEvent.getEvent().getId(), subEvent.getType(), subEvent.getWork().getId(), id});
+    public boolean updateSubEvent(SubEventDtoIn subEvent, Integer id) {
+        String sql = "UPDATE subevent SET name=?, begin=?, ending=?, placeid=?, eventid=?, type=?, workid=? WHERE id=?;";
+        int onnistui = jdbcTemplate.update(sql, new Object[]{subEvent.getName(), subEvent.getBegin().toString(), subEvent.getEnding().toString(),
+                subEvent.getPlaceId(), subEvent.getEventId(), subEvent.getType(), subEvent.getWorkId(), id});
         if (onnistui > 0) {
             return true;
         }

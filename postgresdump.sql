@@ -285,7 +285,7 @@ CREATE TABLE public.subevent (
     id integer NOT NULL,
     name character varying(255),
     begin timestamp without time zone,
-    "end" timestamp without time zone,
+    ending timestamp without time zone,
     placeid integer,
     eventid integer,
     type character varying(255),
@@ -325,8 +325,6 @@ CREATE TABLE public.subeventcast (
     id integer NOT NULL,
     subeventid integer,
     userid integer,
-    roleid integer,
-    workid integer,
     workroleid integer
 );
 
@@ -690,6 +688,8 @@ COPY public.role (id, name, categoryid) FROM stdin;
 4	Sello	1
 16	Tenorisaksofoni	2
 10	Kontrabasso	1
+19	Pasuuna	3
+20	Oboe	2
 \.
 
 
@@ -714,7 +714,7 @@ COPY public.rolecategory (id, name) FROM stdin;
 -- Data for Name: subevent; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.subevent (id, name, begin, "end", placeid, eventid, type, workid) FROM stdin;
+COPY public.subevent (id, name, begin, ending, placeid, eventid, type, workid) FROM stdin;
 2	konsertti 1	2019-07-06 19:00:00	2019-07-06 21:00:00	1	1	konsertti	\N
 4	poissa	2019-07-06 00:00:00	2019-07-06 15:00:00	\N	3	poissaolo	\N
 3	harjoitus	2019-07-05 11:00:00	2019-07-05 13:00:00	2	1	harjoitus	1
@@ -722,6 +722,7 @@ COPY public.subevent (id, name, begin, "end", placeid, eventid, type, workid) FR
 5	harjoitus	2019-07-05 13:00:00	2019-07-05 15:00:00	2	1	harjoitus	3
 6	saliharjoitus	2019-07-06 17:15:00	2019-07-06 18:00:00	1	1	harjoitus	1
 7	saliharjoitus	2019-07-06 15:00:00	2019-07-06 15:30:00	1	1	harjoitus	2
+8	harjoitus	2019-07-07 10:00:00	2019-07-07 13:00:00	1	1	harjoitus	1
 \.
 
 
@@ -729,33 +730,33 @@ COPY public.subevent (id, name, begin, "end", placeid, eventid, type, workid) FR
 -- Data for Name: subeventcast; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.subeventcast (id, subeventid, userid, roleid, workid, workroleid) FROM stdin;
-2	3	2	1	1	1
-1	3	1	1	1	1
-3	3	3	3	1	4
-4	3	4	4	1	5
-19	2	1	1	1	1
-20	2	2	1	1	1
-22	2	4	4	1	5
-21	2	3	3	1	4
-24	2	6	6	2	4
-23	2	5	5	2	2
-12	7	6	6	2	3
-11	7	5	5	2	2
-7	5	3	3	3	7
-5	5	1	1	3	6
-10	5	6	6	3	10
-18	2	6	6	3	10
-6	5	2	1	3	6
-9	5	5	5	3	9
-15	2	3	3	3	7
-13	2	1	1	3	6
-8	5	4	4	3	8
-14	2	2	1	3	6
-17	2	5	5	3	9
-16	2	4	4	3	8
-26	2	12	\N	\N	5
-25	2	11	\N	\N	4
+COPY public.subeventcast (id, subeventid, userid, workroleid) FROM stdin;
+2	3	2	1
+1	3	1	1
+3	3	3	4
+4	3	4	5
+19	2	1	1
+20	2	2	1
+22	2	4	5
+21	2	3	4
+24	2	6	4
+23	2	5	2
+12	7	6	3
+11	7	5	2
+7	5	3	7
+5	5	1	6
+10	5	6	10
+18	2	6	10
+6	5	2	6
+9	5	5	9
+15	2	3	7
+13	2	1	6
+8	5	4	8
+14	2	2	6
+17	2	5	9
+16	2	4	8
+26	2	12	5
+25	2	11	4
 \.
 
 
@@ -875,7 +876,7 @@ SELECT pg_catalog.setval('public.place_id_seq', 3, true);
 -- Name: role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.role_id_seq', 18, true);
+SELECT pg_catalog.setval('public.role_id_seq', 20, true);
 
 
 --
@@ -889,7 +890,7 @@ SELECT pg_catalog.setval('public.rolecategory_id_seq', 9, true);
 -- Name: subevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.subevent_id_seq', 7, true);
+SELECT pg_catalog.setval('public.subevent_id_seq', 8, true);
 
 
 --
@@ -1193,14 +1194,6 @@ ALTER TABLE ONLY public.subevent
 
 
 --
--- Name: subeventcast subeventcast_role_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.subeventcast
-    ADD CONSTRAINT subeventcast_role_id_fk FOREIGN KEY (roleid) REFERENCES public.role(id);
-
-
---
 -- Name: subeventcast subeventcast_subevent_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1214,14 +1207,6 @@ ALTER TABLE ONLY public.subeventcast
 
 ALTER TABLE ONLY public.subeventcast
     ADD CONSTRAINT subeventcast_user_id_fk FOREIGN KEY (userid) REFERENCES public."user"(id);
-
-
---
--- Name: subeventcast subeventcast_work_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.subeventcast
-    ADD CONSTRAINT subeventcast_work_id_fk FOREIGN KEY (workid) REFERENCES public.work(id);
 
 
 --

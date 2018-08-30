@@ -13,17 +13,17 @@ public class SubEvent {
     private String name;
     private String type;
     private LocalDateTime begin;
-    private LocalDateTime end;
+    private LocalDateTime ending;
     private Place place;
     private Event event;
     private List<User> castAndCrew;
     private Work work;
 
-    public SubEvent(String name, String type, LocalDateTime begin, LocalDateTime end, Place place, Event event, List<User> castAndCrew, Work work) {
+    public SubEvent(String name, String type, LocalDateTime begin, LocalDateTime ending, Place place, Event event, List<User> castAndCrew, Work work) {
         this.name = name;
         this.type = type;
         this.begin = begin;
-        this.end = end;
+        this.ending = ending;
         this.place = place;
         this.event = event;
         this.castAndCrew = castAndCrew;
@@ -69,12 +69,12 @@ public class SubEvent {
         this.begin = begin;
     }
 
-    public LocalDateTime getEnd() {
-        return end;
+    public LocalDateTime getEnding() {
+        return ending;
     }
 
-    public void setEnd(LocalDateTime end) {
-        this.end = end;
+    public void setEnding(LocalDateTime ending) {
+        this.ending = ending;
     }
 
     public Place getPlace() {
@@ -116,7 +116,7 @@ public class SubEvent {
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", begin=" + begin +
-                ", end=" + end +
+                ", ending=" + ending +
                 ", place=" + place +
                 ", event=" + event +
                 ", castAndCrew=" + castAndCrew +

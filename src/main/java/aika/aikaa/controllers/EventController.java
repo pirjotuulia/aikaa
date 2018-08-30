@@ -3,9 +3,10 @@ package aika.aikaa.controllers;
 import aika.aikaa.daos.EventDao;
 import aika.aikaa.objects.Event;
 import aika.aikaa.objects.SubEvent;
+import aika.aikaa.objects.dtos.SubEventDtoIn;
+import aika.aikaa.objects.dtos.SubEventDtoOut;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.*;
 
 import java.util.List;
 
@@ -43,22 +44,22 @@ public class EventController{
     }
 
     @GetMapping("/api/subevents")
-    public List<SubEvent> allSubEvents() {
+    public List<SubEventDtoOut> allSubEvents() {
         return ed.allSubEvents();
     }
 
     @GetMapping("/api/subevents/{id}")
-    public SubEvent oneSubEventById(@PathVariable Integer id) {
-        return ed.oneSubEventById(id);
+    public SubEventDtoOut oneSubEventById(@PathVariable Integer id) {
+        return ed.oneSubEventDtoOutById(id);
     }
 
     @PostMapping("/api/subevents")
-    public SubEvent createSubEvent(@RequestBody SubEvent subEvent) {
-        return ed.createSubEvent(subEvent);
+    public SubEvent createSubEvent(@RequestBody SubEventDtoIn subEventDtoIn) {
+        return ed.createSubEvent(subEventDtoIn);
     }
 
     @PutMapping("/api/subevents/{id}")
-    public boolean updateSubEvent(@RequestBody SubEvent subEvent, @PathVariable Integer id) {
+    public boolean updateSubEvent(@RequestBody SubEventDtoIn subEvent, @PathVariable Integer id) {
         return ed.updateSubEvent(subEvent, id);
     }
 
