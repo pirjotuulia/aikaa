@@ -66,7 +66,8 @@ public class EventDao {
     }
 
     public List<SubEvent> listOfSubEventsByEventId(int eventId) {
-        String sql = "SELECT subevent.*, place.name as place FROM subevent JOIN place ON place.id = subevent.placeid WHERE eventid=?;";
+        String sql = "SELECT subevent.*, place.name as place FROM subevent JOIN place ON place.id = subevent.placeid " +
+                "JOIN event ON event.id = subevent.eventid WHERE eventid=?;";
         List<SubEvent> subEventList = jdbcTemplate.query(sql, new Object[]{eventId}, new BeanPropertyRowMapper(SubEvent.class));
         return subEventList;
     }
@@ -88,7 +89,7 @@ public class EventDao {
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
         if (onnistui > 0) {
-            int id = keyHolder.getKey().intValue();
+            int id = (int) keyHolder.getKeys().get("id");
             event.setId(id);
         }
         return event;
@@ -128,7 +129,7 @@ public class EventDao {
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
         if (onnistui > 0) {
-            int id = keyHolder.getKey().intValue();
+            int id = (int) keyHolder.getKeys().get("id");
             newSubEvent.setId(id);
         }
         return newSubEvent;

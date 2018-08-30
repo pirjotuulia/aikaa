@@ -79,7 +79,7 @@ public class UserDao {
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
         if (onnistui > 0) {
-            int id = keyHolder.getKey().intValue();
+            int id = (int) keyHolder.getKeys().get("id");
             user.setId(id);
             if (!user.getRoles().isEmpty()) {
                 user.getRoles().stream().forEach(r -> {

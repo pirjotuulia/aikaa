@@ -51,7 +51,7 @@ public class PlaceDao {
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
         if (onnistui > 0) {
-            int id = keyHolder.getKey().intValue();
+            int id = (int) keyHolder.getKeys().get("id");
             place.setId(id);
         }
         return place;
@@ -93,7 +93,7 @@ public class PlaceDao {
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
         if (onnistui > 0) {
-            int id = keyHolder.getKey().intValue();
+            int id = (int) keyHolder.getKeys().get("id");
             address.setId(id);
         }
         return address;

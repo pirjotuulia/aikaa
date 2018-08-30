@@ -49,7 +49,7 @@ public class WorkDao {
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
         if (onnistui > 0) {
-            int id = keyHolder.getKey().intValue();
+            int id = (int) keyHolder.getKeys().get("id");
             newWork.setId(id);
         }
         return newWork;

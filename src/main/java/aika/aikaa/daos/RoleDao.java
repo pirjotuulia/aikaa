@@ -50,7 +50,7 @@ public class RoleDao {
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
         if (onnistui > 0) {
-            int id = keyHolder.getKey().intValue();
+            int id = (int) keyHolder.getKeys().get("id");
             role.setId(id);
         }
         return role;
@@ -92,7 +92,7 @@ public class RoleDao {
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
         if (onnistui > 0) {
-            int id = keyHolder.getKey().intValue();
+            int id = (int) keyHolder.getKeys().get("id");
             return id;
         }
         return -1;

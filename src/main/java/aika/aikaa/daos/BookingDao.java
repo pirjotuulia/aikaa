@@ -27,8 +27,9 @@ public class BookingDao {
                 "role.name as rolename, work.work as workname, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
-                " JOIN role ON role.id = subeventcast.roleid" +
-                " JOIN work ON work.id = subeventcast.workid" +
+                " JOIN workrole ON workrole.id = subeventcast.workroleid" +
+                " JOIN role ON role.id = workrole.roleid" +
+                " JOIN work ON work.id = workrole.workid" +
                 " JOIN place ON place.id = subevent.placeid" +
                 " JOIN event ON subevent.eventid = event.id ;";
         List<Booking> bookingList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(Booking.class));
@@ -41,8 +42,9 @@ public class BookingDao {
                 "role.name as rolename, work.work as workname, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
-                " JOIN role ON role.id = subeventcast.roleid" +
-                " JOIN work ON work.id = subeventcast.workid" +
+                " JOIN workrole ON workrole.id = subeventcast.workroleid" +
+                " JOIN role ON role.id = workrole.roleid" +
+                " JOIN work ON work.id = workrole.workid" +
                 " JOIN place ON place.id = subevent.placeid " +
                 " JOIN event ON subevent.eventid = event.id WHERE subeventcast.userid=?;";
         List<Booking> bookingList = jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper(Booking.class));
@@ -67,8 +69,9 @@ public class BookingDao {
                 "role.name as rolename, work.work as workname, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
-                " JOIN role ON role.id = subeventcast.roleid" +
-                " JOIN work ON work.id = subeventcast.workid" +
+                " JOIN workrole ON workrole.id = subeventcast.workroleid" +
+                " JOIN role ON role.id = workrole.roleid" +
+                " JOIN work ON work.id = workrole.workid" +
                 " JOIN place ON place.id = subevent.placeid " +
                 " JOIN event ON subevent.eventid = event.id WHERE subeventcast.userid=? AND DATE(subevent.begin)=?;";
         List<Booking> bookingList = jdbcTemplate.query(sql, new Object[]{id, dayRequested}, new BeanPropertyRowMapper(Booking.class));
