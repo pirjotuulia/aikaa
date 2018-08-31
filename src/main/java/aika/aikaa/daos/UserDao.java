@@ -69,31 +69,38 @@ public class UserDao {
     }
 
     public User createUser(User user) {
-        String sql = "INSERT INTO \"user\" (name, userLevel) VALUES (?,?);";
+        String sql = "INSERT INTO \"user\" (name, userLevel, email, addressid, phonenumber, picurl) VALUES (?,?,?,?,?,?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        User newUser = nullcheckUser(user);
         PreparedStatementCreator psc = connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, user.getName());
-            ps.setInt(2, user.getUserLevel());
+            ps.setString(1, newUser.getName());
+            ps.setInt(2, newUser.getUserLevel());
+            ps.setString(3, newUser.getEmail());
+            ps.setInt(4, newUser.getAddressid());
+            ps.setString(5, newUser.getPhonenumber());
+            ps.setString(6, newUser.getPicurl());
             return ps;
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
         if (onnistui > 0) {
             int id = (int) keyHolder.getKeys().get("id");
-            user.setId(id);
-            if (!user.getRoles().isEmpty()) {
-                user.getRoles().stream().forEach(r -> {
-                    addUserRole(r.getId(), user.getId());
+            newUser.setId(id);
+            if (!newUser.getRoles().isEmpty()) {
+                newUser.getRoles().stream().forEach(r -> {
+                    addUserRole(r.getId(), newUser.getId());
                 });
             }
         }
-        return user;
+        return newUser;
     }
 
     public boolean updateUser(User user, Integer id) {
-        String sql = "UPDATE \"user\" SET name=?, userLevel=? WHERE id=?";
+        User newUser = nullcheckUser(user);//jos edestä tulee tyhjiä kenttiä, oletetaan, että tietokannasta halutaan tyhjentää kenttä.
+        String sql = "UPDATE \"user\" SET name=?, userLevel=? , email=?, addressid=?, phonenumber=?, picurl=? WHERE id=?";
         //String sql = "UPDATE user SET name=?, userLevel=? WHERE id=?";
-        int onnistui = jdbcTemplate.update(sql, new Object[]{user.getName(), user.getUserLevel(), id});
+        int onnistui = jdbcTemplate.update(sql, new Object[]{newUser.getName(), newUser.getUserLevel(), newUser.getEmail(), newUser.getAddressid(),
+                newUser.getPhonenumber(), newUser.getPicurl(), id});
         if (onnistui > 0) {
             return true;
         }
@@ -120,5 +127,27 @@ public class UserDao {
             return true;
         }
         return false;
+    }
+
+    private User nullcheckUser(User user) {
+        if (user.getName()==null) {
+            user.setName("");
+        }
+        if (user.getUserLevel()==null) {
+            user.setUserLevel(0);
+        }
+        if (user.getEmail()==null) {
+            user.setEmail("");
+        }
+        if (user.getAddressid()==null) {
+            user.setAddressid(0);
+        }
+        if (user.getPhonenumber()==null) {
+            user.setPhonenumber("");
+        }
+        if (user.getPicurl()==null) {
+            user.setPicurl("");
+        }
+            return user;
     }
 }

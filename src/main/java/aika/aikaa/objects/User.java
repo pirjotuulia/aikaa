@@ -14,9 +14,11 @@ public class User {
     private Integer id;
     private String name;
     private Integer userLevel;
-    private List<Role> roles;
-    private String googleid;
+    private List<Role> roles = new ArrayList<>();
     private String email;
+    private Integer addressid;
+    private String phonenumber;
+    private String picurl;
 
     public User(String name, Integer userLevel, List<Role> roles) {
         this.name = name;
@@ -68,15 +70,6 @@ public class User {
         return userLevels;
     }
 
-
-    public String getGoogleid() {
-        return googleid;
-    }
-
-    public void setGoogleid(String googleid) {
-        this.googleid = googleid;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -97,13 +90,27 @@ public class User {
         this.roles = roles;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", userLevel=" + userLevel +
-                ", roles=" + roles +
-                '}';
+    public Integer getAddressid() {
+        return addressid;
+    }
+
+    public void setAddressid(Integer addressid) {
+        this.addressid = addressid;
+    }
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+
+    public String getPicurl() {
+        return picurl;
+    }
+
+    public void setPicurl(String picurl) {
+        this.picurl = picurl;
     }
 }

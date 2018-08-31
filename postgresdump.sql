@@ -361,9 +361,10 @@ CREATE TABLE public."user" (
     id integer NOT NULL,
     name character varying(255),
     userlevel integer,
-    googleid character varying(255),
     email character varying(255),
-    password character varying(255)
+    addressid integer,
+    phonenumber character varying(255),
+    picurl character varying(255)
 );
 
 
@@ -611,6 +612,7 @@ COPY public.appuser (id, username, email, password) FROM stdin;
 1	Pirjo Leppänen	pirjotuulia74@gmail.com	$2a$10$IBLFLBzDMgtsdp2MrwJBIeUoInL6ZqMXCAsmxPIuni0lLiNzgijY6
 3	Mikko Kallio	mikko.m.kallio	$2a$10$r2kCrAkyTX1bvBaQ6onLg.Q4EDFTn0WKe3U6yGunQE1Zbtk2yxNZi
 5	Heponen	heponen@ihanuusvirasto.com	$2a$10$Tvx0RUNrz0wKbg6nEwWpu.oCpn3TaYN7iS2jP/DxgVESiwYwbWkIu
+6	Admin Admin	admin@admin.com	$2a$10$QAQTSWoPjoL9WJtcLZdzn.QD5jNnjMjbkE1MTefSaVJhKqXkcL0Q6
 \.
 
 
@@ -621,6 +623,8 @@ COPY public.appuser (id, username, email, password) FROM stdin;
 COPY public.appuserrole (userid, userrole) FROM stdin;
 1	ROLE_SUPERADMIN
 2	ROLE_SUPERADMIN
+6	ROLE_USER
+6	ROLE_ADMIN
 \.
 
 
@@ -723,6 +727,7 @@ COPY public.subevent (id, name, begin, ending, placeid, eventid, type, workid) F
 6	saliharjoitus	2019-07-06 17:15:00	2019-07-06 18:00:00	1	1	harjoitus	1
 7	saliharjoitus	2019-07-06 15:00:00	2019-07-06 15:30:00	1	1	harjoitus	2
 8	harjoitus	2019-07-07 10:00:00	2019-07-07 13:00:00	1	1	harjoitus	1
+9	harjoitus	2019-07-03 10:00:00	\N	1	1	harjoitus	1
 \.
 
 
@@ -764,22 +769,23 @@ COPY public.subeventcast (id, subeventid, userid, workroleid) FROM stdin;
 -- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."user" (id, name, userlevel, googleid, email, password) FROM stdin;
-1	Muusikko1	3	\N	\N	\N
-2	Muusikko2	3	\N	\N	\N
-3	Muusikko3	3	\N	\N	\N
-4	Muusikko4	3	\N	\N	\N
-5	Muusikko5	3	\N	\N	\N
-6	Muusikko6	3	\N	\N	\N
-7	Muusikko7	3	\N	\N	\N
-8	Muusikko8	3	\N	\N	\N
-9	SuperAdmin	1	\N	\N	\N
-10	Admin	2	\N	\N	\N
-11	Järjestäjä	3	\N	\N	\N
-12	Konserttisihteeri	2	\N	\N	\N
-13	Muusikko10	3	\N	\N	\N
-14	Pirjo Leppänen	1	110922832614819859477	pirjotuulia74@gmail.com	\N
-15	Mikko Kallio	1	\N	mikko.m.kallio@gmail.com	\N
+COPY public."user" (id, name, userlevel, email, addressid, phonenumber, picurl) FROM stdin;
+1	Muusikko1	3	\N	\N	\N	\N
+2	Muusikko2	3	\N	\N	\N	\N
+3	Muusikko3	3	\N	\N	\N	\N
+4	Muusikko4	3	\N	\N	\N	\N
+5	Muusikko5	3	\N	\N	\N	\N
+6	Muusikko6	3	\N	\N	\N	\N
+7	Muusikko7	3	\N	\N	\N	\N
+8	Muusikko8	3	\N	\N	\N	\N
+9	SuperAdmin	1	\N	\N	\N	\N
+10	Admin	2	\N	\N	\N	\N
+11	Järjestäjä	3	\N	\N	\N	\N
+12	Konserttisihteeri	2	\N	\N	\N	\N
+13	Muusikko10	3	\N	\N	\N	\N
+14	Pirjo Leppänen	1	pirjotuulia74@gmail.com	\N	\N	\N
+15	Mikko Kallio	1	mikko.m.kallio@gmail.com	\N	\N	\N
+16	Admin Admin	2	admin@admin.com	\N	\N	\N
 \.
 
 
@@ -848,7 +854,7 @@ SELECT pg_catalog.setval('public.address_id_seq', 1, false);
 -- Name: appuser_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.appuser_id_seq', 5, true);
+SELECT pg_catalog.setval('public.appuser_id_seq', 6, true);
 
 
 --
@@ -890,7 +896,7 @@ SELECT pg_catalog.setval('public.rolecategory_id_seq', 9, true);
 -- Name: subevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.subevent_id_seq', 8, true);
+SELECT pg_catalog.setval('public.subevent_id_seq', 9, true);
 
 
 --
@@ -904,7 +910,7 @@ SELECT pg_catalog.setval('public.subeventcast_id_seq', 26, true);
 -- Name: user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_id_seq', 15, true);
+SELECT pg_catalog.setval('public.user_id_seq', 16, true);
 
 
 --
