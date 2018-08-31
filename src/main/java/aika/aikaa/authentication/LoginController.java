@@ -26,7 +26,8 @@ public class LoginController {
     private UserDao ud;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private JwtTokenProvider jwtTokenProvider;
-    @Autowired private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public LoginController(@Autowired AppUserDao aud, @Autowired BCryptPasswordEncoder bCryptPasswordEncoder, @Autowired UserDao ud,
                            @Autowired JwtTokenProvider jwtTokenProvider) {
@@ -70,6 +71,7 @@ public class LoginController {
 
     @PostMapping("/signin")
     public String signIn(@RequestBody User user) {
+        System.out.println(user);
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
             return jwtTokenProvider.createToken(user.getUsername(), aud.findByUsername(user.getUsername()).getRoles());

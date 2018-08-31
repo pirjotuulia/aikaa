@@ -24,9 +24,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private CustomAuthenticationProvider authProvider;
 
     @Override
-    protected void configure(
-            AuthenticationManagerBuilder auth) throws Exception {
-
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authProvider);
     }
 
@@ -36,8 +34,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()//
-                .antMatchers("/signup", "/login").permitAll()//
-                .antMatchers("/signin*").permitAll()//
+                .antMatchers("/signup","/signin", "/login").permitAll()//
+//                .antMatchers("/","/*", "/**").permitAll()
                 .anyRequest().authenticated();
         http.exceptionHandling().accessDeniedPage("/");
 
