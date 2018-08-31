@@ -1,6 +1,7 @@
 package aika.aikaa.controllers;
 
 import aika.aikaa.daos.WorkDao;
+import aika.aikaa.objects.Role;
 import aika.aikaa.objects.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,5 +44,15 @@ public class WorkController {
     @GetMapping("/api/workroles")
     public List<Work> allWorksWithRoleDetails() {
         return wd.allWorksWithRoleDetails();
+    }
+
+    @GetMapping("/api/workroles/{id}")
+    public Work worksWithRoleDetails(@PathVariable Integer id) {
+        return wd.oneWorkWithRoleDetails(id);
+    }
+
+    @PostMapping("/api/workroles/{id}")
+    public List<Role> addRoleDetailsToWorkById(@RequestBody List<Integer> roleList, @PathVariable Integer id) {
+        return wd.addRoleDetailsToWorkById(roleList, id);
     }
 }

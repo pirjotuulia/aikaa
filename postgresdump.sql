@@ -786,6 +786,8 @@ COPY public."user" (id, name, userlevel, email, addressid, phonenumber, picurl) 
 14	Pirjo Leppänen	1	pirjotuulia74@gmail.com	\N	\N	\N
 15	Mikko Kallio	1	mikko.m.kallio@gmail.com	\N	\N	\N
 16	Admin Admin	2	admin@admin.com	\N	\N	\N
+18	Ihan Tavallinen Käyttäjä	3	kayttaja@kayttaja.com	0		
+17	Eka Tavallinen Käyttäjä	3	ekakayttaja@kayttaja.com	0		
 \.
 
 
@@ -840,6 +842,9 @@ COPY public.workrole (id, workid, roleid, number) FROM stdin;
 12	5	7	1
 2	2	5	1
 9	3	5	1
+13	2	5	1
+14	2	5	1
+15	2	6	1
 \.
 
 
@@ -910,7 +915,7 @@ SELECT pg_catalog.setval('public.subeventcast_id_seq', 26, true);
 -- Name: user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_id_seq', 16, true);
+SELECT pg_catalog.setval('public.user_id_seq', 18, true);
 
 
 --
@@ -931,7 +936,7 @@ SELECT pg_catalog.setval('public.work_id_seq', 5, true);
 -- Name: workrole_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.workrole_id_seq', 12, true);
+SELECT pg_catalog.setval('public.workrole_id_seq', 15, true);
 
 
 --
