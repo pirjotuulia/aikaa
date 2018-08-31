@@ -23,7 +23,7 @@ public class BookingDao {
 
     public List<Booking> allBookings() {
         String sql = "SELECT event.id as eventid, subeventcast.id as id, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
-                "subevent.begin as begin, subevent.end as end, \"user\".name as username, \"user\".id as userid, " +
+                "subevent.begin as begin, subevent.ending as ending, \"user\".name as username, \"user\".id as userid, " +
                 "role.name as rolename, work.work as workname, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
@@ -38,7 +38,7 @@ public class BookingDao {
 
     public List<Booking> userBookings(Integer id) {
         String sql = "SELECT event.id as eventid, subeventcast.id as id, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
-                "subevent.begin as begin, subevent.end as end, \"user\".name as username, \"user\".id as userid, " +
+                "subevent.begin as begin, subevent.ending as ending, \"user\".name as username, \"user\".id as userid, " +
                 "role.name as rolename, work.work as workname, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
@@ -54,7 +54,7 @@ public class BookingDao {
 
     public List<Booking> placeBookings(Integer id) {
         String sql = "SELECT DISTINCT event.id as eventid, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
-                "subevent.begin as begin, subevent.end as end, place.name as placename" +
+                "subevent.begin as begin, subevent.ending as ending, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN place ON place.id = subevent.placeid" +
                 " JOIN event ON subevent.eventid = event.id WHERE place.id=?;";
@@ -65,7 +65,7 @@ public class BookingDao {
     public List<Booking> userBookingsByDay(String day, Integer id) {
         LocalDate dayRequested = LocalDate.parse(day);
         String sql = "SELECT event.id as eventid, subeventcast.id as id, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
-                "subevent.begin as begin, subevent.end as end, \"user\".name as username, \"user\".id as userid, " +
+                "subevent.begin as begin, subevent.ending as ending, \"user\".name as username, \"user\".id as userid, " +
                 "role.name as rolename, work.work as workname, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN \"user\" ON \"user\".id = subeventcast.userid" +

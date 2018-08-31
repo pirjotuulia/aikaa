@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import sun.java2d.opengl.OGLContext;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
