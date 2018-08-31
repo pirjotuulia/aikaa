@@ -120,6 +120,17 @@ public class WorkDao {
         return false;
     }
 
+    public List<Role> addRoleDetailsToWorkById(List<Integer> roleList, Integer workId) {
+        System.out.println(roleList);
+        Map<Integer, Integer> roleNumbers = new HashMap<>();
+        roleList.stream().forEach(r-> {
+            roleNumbers.putIfAbsent(r, 0);
+            roleNumbers.put(r, roleNumbers.get(r)+1);
+        });
+        addAllWorkRoles(workId, roleNumbers);
+        return allRolesByWorkId(workId);
+    }
+
     public boolean modifyWorkRole(Integer workroleid, Integer newRoleid, Integer newNumber) {
         String sql = "UPDATE workrole SET roleid=?, number=? WHERE workroleid=?";
         int onnistui = jdbcTemplate.update(sql, new Object[]{newRoleid, newNumber, workroleid});
@@ -138,15 +149,9 @@ public class WorkDao {
         return false;
     }
 
-    public List<Role> addRoleDetailsToWorkById(List<Integer> roleList, Integer workId) {
-        System.out.println(roleList);
-        Map<Integer, Integer> roleNumbers = new HashMap<>();
-        roleList.stream().forEach(r-> {
-            roleNumbers.putIfAbsent(r, 0);
-            roleNumbers.put(r, roleNumbers.get(r)+1);
-        });
-        addAllWorkRoles(workId, roleNumbers);
-        return allRolesByWorkId(workId);
+    public boolean deleteRolesFromWork(List<Integer> roleList, Integer workid) {
+        //TODO: pitäiskö tässä sittenkin olla workroleid?? toteuta
+        return false;
     }
 }
 

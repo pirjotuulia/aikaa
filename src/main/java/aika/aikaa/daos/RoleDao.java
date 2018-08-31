@@ -1,6 +1,7 @@
 package aika.aikaa.daos;
 
 import aika.aikaa.objects.Role;
+import aika.aikaa.objects.RoleCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -97,4 +98,11 @@ public class RoleDao {
         }
         return -1;
     }
+
+    public List<RoleCategory> getAllRoleCategories() {
+        String sql = "SELECT * FROM rolecategory";
+        List<RoleCategory> categories = jdbcTemplate.query(sql, new BeanPropertyRowMapper(RoleCategory.class));
+        return categories;
+    }
 }
+

@@ -55,4 +55,9 @@ public class WorkController {
     public List<Role> addRoleDetailsToWorkById(@RequestBody List<Integer> roleList, @PathVariable Integer id) {
         return wd.addRoleDetailsToWorkById(roleList, id);
     }
+
+    @DeleteMapping("/api/workroles/{id}")
+    public boolean deleteRolesFromWorkById(@RequestBody List<Integer> roleList, @PathVariable Integer workid) {
+        return wd.deleteRolesFromWork(roleList, workid);
+    }
 }

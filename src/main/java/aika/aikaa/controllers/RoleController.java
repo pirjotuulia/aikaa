@@ -2,6 +2,7 @@ package aika.aikaa.controllers;
 
 import aika.aikaa.daos.RoleDao;
 import aika.aikaa.objects.Role;
+import aika.aikaa.objects.RoleCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,5 +39,10 @@ public class RoleController {
     @DeleteMapping("/api/roles/{id}")
     public boolean deleteRole(@PathVariable Integer id) {
         return rd.deleteRole(id);
+    }
+
+    @GetMapping("/api/rolecategories")
+    public List<RoleCategory> allRoleCategories() {
+        return rd.getAllRoleCategories();
     }
 }
