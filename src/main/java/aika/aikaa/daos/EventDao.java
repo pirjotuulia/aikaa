@@ -138,7 +138,11 @@ public class EventDao {
             ps.setInt(4, newSubEvent.getPlaceId());
             ps.setInt(5, newSubEvent.getEventId());
             ps.setString(6, newSubEvent.getType());
-            ps.setInt(7, newSubEvent.getWorkId());
+            if (newSubEvent.getWorkId() != null) {
+                ps.setInt(7, newSubEvent.getWorkId());
+            } else {
+                ps.setObject(7, null);
+            }
             return ps;
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
@@ -163,6 +167,15 @@ public class EventDao {
     public boolean deleteSubEvent(Integer id) {
         String sql = "DELETE FROM subevent WHERE id=?;";
         int onnistui = jdbcTemplate.update(sql, id);
+        if (onnistui > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addWorkToEvent(Integer eventid, Integer workid) {
+        String sql = "INSERT INTO eventwork (eventid, workid) VALUES (?,?);";
+        int onnistui = jdbcTemplate.update(sql, new Object[]{eventid, workid});
         if (onnistui > 0) {
             return true;
         }

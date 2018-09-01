@@ -1,5 +1,6 @@
 package aika.aikaa.controllers;
 
+import aika.aikaa.daos.EventDao;
 import aika.aikaa.daos.WorkDao;
 import aika.aikaa.objects.Role;
 import aika.aikaa.objects.Work;
@@ -11,9 +12,11 @@ import java.util.List;
 @RestController
 public class WorkController {
     private WorkDao wd;
+    private EventDao ed;
 
-    public WorkController(@Autowired WorkDao wd) {
+    public WorkController(@Autowired WorkDao wd, @Autowired EventDao ed) {
         this.wd = wd;
+        this.ed = ed;
     }
 
     @GetMapping("/api/works")
@@ -23,12 +26,16 @@ public class WorkController {
 
     @GetMapping("/api/works/{id}")
     public Work oneWork(@PathVariable Integer id) {
-        return wd.oneWork(id);
+        return wd.oneWorkWithRoleDetails(id);
     }
 
     @PostMapping("/api/works")
-    public Work createWork(@RequestBody Work work) {
-        return wd.createWork(work);
+    public Work createWork(@RequestBody Work work, @RequestParam("event") boolean event, @RequestParam("eventid") Integer eventid) {
+        Work created = wd.createWork(work);
+        if (event) {
+            boolean onnistui = ed.addWorkToEvent(eventid, created.getId());
+        }
+        return created;
     }
 
     @PutMapping("/api/works/{id}")
