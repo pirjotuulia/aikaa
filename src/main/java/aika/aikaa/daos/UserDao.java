@@ -120,7 +120,7 @@ public class UserDao {
         return false;
     }
 
-    private boolean addUserRole(Integer roleId, Integer userId) {
+    public boolean addUserRole(Integer roleId, Integer userId) {
         String sql = "INSERT INTO userrole (roleId, userId) VALUES (?,?);";
         int onnistui = jdbcTemplate.update(sql, new Object[]{roleId, userId});
         if (onnistui > 0) {
