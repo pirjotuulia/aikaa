@@ -65,9 +65,9 @@ public class EventDao {
 
     public SubEventDtoOut oneSubEventDtoOutById(Integer id) {
         String sql = "SELECT subevent.*, place.name as placename, event.name as eventname, work.work as workname FROM subevent " +
-                "JOIN place ON place.id = subevent.placeid " +
-                "JOIN event ON event.id = subevent.eventid " +
-                "JOIN work ON work.id = subevent.workid " +
+                "LEFT JOIN place ON place.id = subevent.placeid " +
+                "LEFT JOIN event ON event.id = subevent.eventid " +
+                "LEFT JOIN work ON work.id = subevent.workid " +
                 "WHERE subevent.id=?;";
         SubEventDtoOut subEventOut = (SubEventDtoOut) jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper(SubEventDtoOut.class));
         return subEventOut;
