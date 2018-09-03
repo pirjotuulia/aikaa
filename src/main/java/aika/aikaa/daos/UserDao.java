@@ -49,6 +49,7 @@ public class UserDao {
         User user = (User) jdbcTemplate.queryForObject(sql, new Object[]{userName}, new BeanPropertyRowMapper(User.class));
         return user;
     }
+
     public User oneUserByEmail(String userEmail) {
         String sql = "SELECT * from \"user\" WHERE email=?";
         User user = (User) jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new BeanPropertyRowMapper(User.class));
@@ -121,33 +122,41 @@ public class UserDao {
     }
 
     public boolean addUserRole(Integer roleId, Integer userId) {
-        String sql = "INSERT INTO userrole (roleId, userId) VALUES (?,?);";
-        int onnistui = jdbcTemplate.update(sql, new Object[]{roleId, userId});
-        if (onnistui > 0) {
-            return true;
+        if (!userRolesAsIdList(userId).contains(roleId)) {
+            String sql = "INSERT INTO userrole (roleId, userId) VALUES (?,?);";
+            int onnistui = jdbcTemplate.update(sql, new Object[]{roleId, userId});
+            if (onnistui > 0) {
+                return true;
+            }
         }
         return false;
     }
 
+    private List<Integer> userRolesAsIdList(Integer userId) {
+        String sql = "SELECT userrole.roleid from userrole JOIN \"user\" ON \"user\".id = userrole.userId WHERE userrole.userId=?;";
+        List<Integer> roleList = jdbcTemplate.queryForList(sql, new Object[]{userId}, Integer.class);
+        return roleList;
+    }
+
     private User nullcheckUser(User user) {
-        if (user.getName()==null) {
+        if (user.getName() == null) {
             user.setName("");
         }
-        if (user.getUserLevel()==null) {
+        if (user.getUserLevel() == null) {
             user.setUserLevel(0);
         }
-        if (user.getEmail()==null) {
+        if (user.getEmail() == null) {
             user.setEmail("");
         }
-        if (user.getAddressid()==null) {
+        if (user.getAddressid() == null) {
             user.setAddressid(0);
         }
-        if (user.getPhonenumber()==null) {
+        if (user.getPhonenumber() == null) {
             user.setPhonenumber("");
         }
-        if (user.getPicurl()==null) {
+        if (user.getPicurl() == null) {
             user.setPicurl("");
         }
-            return user;
+        return user;
     }
 }

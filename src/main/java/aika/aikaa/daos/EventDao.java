@@ -159,8 +159,23 @@ public class EventDao {
 
     public boolean updateSubEvent(SubEventDtoIn subEvent, Integer id) {
         String sql = "UPDATE subevent SET name=?, begin=?, ending=?, placeid=?, eventid=?, type=?, workid=? WHERE id=?;";
-        int onnistui = jdbcTemplate.update(sql, new Object[]{subEvent.getName(), subEvent.getBegin().toString(), subEvent.getEnding().toString(),
-                subEvent.getPlaceId(), subEvent.getEventId(), subEvent.getType(), subEvent.getWorkId(), id});
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        PreparedStatementCreator psc = connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, subEvent.getName());
+            ps.setObject(2, subEvent.getBegin());
+            ps.setObject(3, subEvent.getEnding());
+            ps.setInt(4, subEvent.getPlaceId());
+            ps.setInt(5, subEvent.getEventId());
+            ps.setString(6, subEvent.getType());
+            if (subEvent.getWorkId() != null) {
+                ps.setInt(7, subEvent.getWorkId());
+            } else {
+                ps.setObject(7, null);
+            }
+            return ps;
+        };
+        int onnistui = jdbcTemplate.update(psc, keyHolder);
         if (onnistui > 0) {
             return true;
         }
