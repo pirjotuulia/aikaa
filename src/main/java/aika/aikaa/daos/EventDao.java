@@ -21,9 +21,11 @@ import java.util.List;
 @Component
 public class EventDao {
     private JdbcTemplate jdbcTemplate;
+    private WorkDao wd;
 
-    public EventDao(@Autowired JdbcTemplate jdbcTemplate) {
+    public EventDao(@Autowired JdbcTemplate jdbcTemplate, @Autowired WorkDao wd) {
         this.jdbcTemplate = jdbcTemplate;
+        this.wd = wd;
     }
 
     public Event oneEvent(int eventId) {
@@ -37,6 +39,7 @@ public class EventDao {
         String sql = "SELECT work.* FROM eventwork JOIN event ON eventwork.eventId = event.id JOIN work ON eventwork.workId = work.id WHERE eventId =?;";
         List<Work> workList = jdbcTemplate.query(sql, new Object[]{eventId}, new BeanPropertyRowMapper(Work.class));
         event.setWorks(workList);
+        workList.stream().forEach(work -> work.setRoleList(wd.allRolesByWorkId(work.getId())));
         return event;
     }
 

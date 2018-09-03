@@ -11,6 +11,15 @@ public class Role implements Comparable<Role> {
     private String category;
     private Integer categoryId;
     private Integer number;
+    private Integer workroleId;
+
+    public Integer getWorkroleId() {
+        return workroleId;
+    }
+
+    public void setWorkroleId(Integer workroleId) {
+        this.workroleId = workroleId;
+    }
 
     public Integer getNumber() {
         return number;

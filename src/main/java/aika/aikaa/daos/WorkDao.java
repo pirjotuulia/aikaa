@@ -90,7 +90,7 @@ public class WorkDao {
     }
 
     public List<Role> allRolesByWorkId(Integer workid) {
-        String sql = "SELECT workrole.*, role.name as name, role.categoryid as categoryId, rolecategory.name as category FROM workrole JOIN role ON role.id = workrole.roleid JOIN rolecategory ON rolecategory.id = role.categoryid WHERE workid=?;";
+        String sql = "SELECT workrole.id as workroleId, workrole.roleid as id, workrole.number, role.name as name, role.categoryid as categoryId, rolecategory.name as category FROM workrole JOIN role ON role.id = workrole.roleid JOIN rolecategory ON rolecategory.id = role.categoryid WHERE workid=?;";
         List<Role> listOfRoles = jdbcTemplate.query(sql, new Object[]{workid}, new BeanPropertyRowMapper(Role.class));
         return listOfRoles;
     }

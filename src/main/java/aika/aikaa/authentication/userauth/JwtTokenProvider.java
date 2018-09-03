@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import aika.aikaa.authentication.CustomException;
 import aika.aikaa.authentication.model.Role;
+import aika.aikaa.daos.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,8 @@ public class JwtTokenProvider {
 
     @Autowired
     private MyUserDetails myUserDetails;
+    @Autowired
+    private UserDao userDao;
 
     @PostConstruct
     protected void init() {
@@ -50,6 +53,7 @@ public class JwtTokenProvider {
 
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
+        claims.put("id", userDao.oneUserByName(username).getId());
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);

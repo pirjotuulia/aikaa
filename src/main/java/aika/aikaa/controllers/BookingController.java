@@ -41,4 +41,19 @@ public class BookingController {
     public List<Booking> placeBookings(@PathVariable Integer id) {
         return bd.placeBookings(id);
     }
+
+    @GetMapping("/api/bookings/{id}")
+    public Booking oneBooking(@PathVariable Integer bookingId) {
+        return bd.userBookingByBookingId(bookingId);
+    }
+
+    @GetMapping("/api/bookings/subevent/{id}")
+    public List<Booking> subEventBookingsById(@PathVariable Integer subeventid) {
+        return bd.allSubEventBookingsById(subeventid);
+    }
+
+    @PostMapping("/api/bookings")
+    public Booking bookUser(@RequestParam Integer subeventid, Integer userid, Integer workroleid) {
+        return bd.bookUser(subeventid, userid, workroleid);
+    }
 }
