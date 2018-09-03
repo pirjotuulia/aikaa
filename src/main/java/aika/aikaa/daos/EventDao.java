@@ -173,6 +173,7 @@ public class EventDao {
             } else {
                 ps.setObject(7, null);
             }
+            ps.setInt(8, id);
             return ps;
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
