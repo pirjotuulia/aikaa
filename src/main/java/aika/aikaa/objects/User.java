@@ -1,5 +1,7 @@
 package aika.aikaa.objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.GeneratedValue;
@@ -53,6 +55,7 @@ public class User {
         return userLevel;
     }
 
+    @JsonIgnore
     public List<String> getUserLevelAsString() {
         List<String> userLevels = new ArrayList<>();
         if (userLevel>3) {
@@ -112,5 +115,14 @@ public class User {
 
     public void setPicurl(String picurl) {
         this.picurl = picurl;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", roles=" + roles +
+                '}';
     }
 }

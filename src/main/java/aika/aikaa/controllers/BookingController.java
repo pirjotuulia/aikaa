@@ -3,11 +3,13 @@ package aika.aikaa.controllers;
 import aika.aikaa.daos.BookingDao;
 import aika.aikaa.daos.UserDao;
 import aika.aikaa.objects.Booking;
+import aika.aikaa.objects.User;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -50,6 +52,11 @@ public class BookingController {
     @GetMapping("/api/bookings/subevent/{id}")
     public List<Booking> subEventBookingsById(@PathVariable Integer subeventid) {
         return bd.allSubEventBookingsById(subeventid);
+    }
+
+    @GetMapping("/api/bookings/free/{id}")
+    public List<User> freeUsers(@PathVariable Integer id) {
+        return bd.freeUserForASubEvent(id);
     }
 
     @PostMapping("/api/bookings")

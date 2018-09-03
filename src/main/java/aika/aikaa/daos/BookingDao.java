@@ -1,6 +1,8 @@
 package aika.aikaa.daos;
 
 import aika.aikaa.objects.Booking;
+import aika.aikaa.objects.SubEvent;
+import aika.aikaa.objects.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,9 +23,11 @@ import java.util.stream.Collectors;
 @Component
 public class BookingDao {
     private JdbcTemplate jdbcTemplate;
+    private EventDao ed;
 
-    public BookingDao(@Autowired JdbcTemplate jdbcTemplate) {
+    public BookingDao(@Autowired JdbcTemplate jdbcTemplate, @Autowired EventDao ed) {
         this.jdbcTemplate = jdbcTemplate;
+        this.ed = ed;
     }
 
     public List<Booking> allBookings() {
@@ -116,6 +120,18 @@ public class BookingDao {
             return booking;
         }
         return null;
+    }
+
+    public List<User> freeUserForASubEvent(Integer subeventId) {
+        SubEvent subEvent = ed.oneSubEventById(subeventId);
+        LocalDateTime begin = subEvent.getBegin();
+        LocalDateTime ending = subEvent.getEnding();
+        String sql = "SELECT DISTINCT \"user\".id,\"user\".name from \"user\" LEFT JOIN subeventcast ON subeventcast.userid = \"user\".id " +
+                "LEFT JOIN subevent ON subeventcast.subeventid = subevent.id " +
+                "WHERE (DATE(subevent.begin) NOT BETWEEN ? AND ?) AND (DATE(subevent.ending) NOT BETWEEN ? AND ?);";
+        List<User> freeUsers = jdbcTemplate.query(sql, new Object[]{begin, ending, begin, ending}, new BeanPropertyRowMapper<>(User.class));
+        System.out.println(freeUsers);
+        return freeUsers;
     }
 
     public List<Booking> allSubEventBookingsById(Integer subeventid) {

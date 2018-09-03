@@ -9,17 +9,17 @@ public class SubEventDtoOut {
     private LocalDateTime begin;
     private LocalDateTime ending;
     private String placename;
-    private int placeid;
+    private Integer placeid;
     private String eventname;
-    private int eventid;
+    private Integer eventid;
     private String workname;
-    private int workid;
+    private Integer workid;
 
-    public int getWorkid() {
+    public Integer getWorkid() {
         return workid;
     }
 
-    public void setWorkid(int workid) {
+    public void setWorkid(Integer workid) {
         this.workid = workid;
     }
 
@@ -71,11 +71,11 @@ public class SubEventDtoOut {
         this.placename = placename;
     }
 
-    public int getPlaceid() {
+    public Integer getPlaceid() {
         return placeid;
     }
 
-    public void setPlaceid(int placeid) {
+    public void setPlaceid(Integer placeid) {
         this.placeid = placeid;
     }
 
@@ -87,11 +87,11 @@ public class SubEventDtoOut {
         this.eventname = eventname;
     }
 
-    public int getEventid() {
+    public Integer getEventid() {
         return eventid;
     }
 
-    public void setEventid(int eventid) {
+    public void setEventid(Integer eventid) {
         this.eventid = eventid;
     }
 
