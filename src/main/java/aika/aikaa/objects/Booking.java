@@ -18,8 +18,17 @@ public class Booking {
     private String rolename;
     private String workname;
     private String placename;
+    private Integer workroleid;
 
     public Booking() {
+    }
+
+    public Integer getWorkroleid() {
+        return workroleid;
+    }
+
+    public void setWorkroleid(Integer workroleid) {
+        this.workroleid = workroleid;
     }
 
     public int getEventid() {

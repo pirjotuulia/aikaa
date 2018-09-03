@@ -49,7 +49,7 @@ public class BookingController {
         return bd.userBookingByBookingId(bookingId);
     }
 
-    @GetMapping("/api/bookings/subevent/{id}")
+    @GetMapping("/api/bookings/subevents/{subeventid}")
     public List<Booking> subEventBookingsById(@PathVariable Integer subeventid) {
         return bd.allSubEventBookingsById(subeventid);
     }

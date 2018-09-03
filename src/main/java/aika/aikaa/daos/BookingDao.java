@@ -141,7 +141,7 @@ public class BookingDao {
     public List<Booking> allSubEventBookingsById(Integer subeventid) {
         String sql = "SELECT event.id as eventid, subeventcast.id as id, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
                 "subevent.begin as begin, subevent.ending as ending, \"user\".name as username, \"user\".id as userid, " +
-                "role.name as rolename, work.work as workname, place.name as placename" +
+                "role.name as rolename, work.work as workname, place.name as placename, workrole.id as workroleid" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
                 " JOIN workrole ON workrole.id = subeventcast.workroleid" +
