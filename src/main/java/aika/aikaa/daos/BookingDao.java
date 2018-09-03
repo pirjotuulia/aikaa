@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -24,10 +25,12 @@ import java.util.stream.Collectors;
 public class BookingDao {
     private JdbcTemplate jdbcTemplate;
     private EventDao ed;
+    private UserDao ud;
 
-    public BookingDao(@Autowired JdbcTemplate jdbcTemplate, @Autowired EventDao ed) {
+    public BookingDao(@Autowired JdbcTemplate jdbcTemplate, @Autowired EventDao ed, @Autowired UserDao ud) {
         this.jdbcTemplate = jdbcTemplate;
         this.ed = ed;
+        this.ud = ud;
     }
 
     public List<Booking> allBookings() {
@@ -47,7 +50,7 @@ public class BookingDao {
 
     public List<Booking> userBookings(Integer id) {
         String sql = "SELECT event.id as eventid, subeventcast.id as id, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
-                "subevent.begin as begin, subevent.ending as ending, \"user\".name as username, \"user\".id as userid, " +
+                "subevent.begin as begin, subevent.ending as ending, \"user\".name as username, subeventcast.userid as userid, " +
                 "role.name as rolename, work.work as workname, place.name as placename" +
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
@@ -126,11 +129,12 @@ public class BookingDao {
         SubEvent subEvent = ed.oneSubEventById(subeventId);
         LocalDateTime begin = subEvent.getBegin();
         LocalDateTime ending = subEvent.getEnding();
-        String sql = "SELECT DISTINCT \"user\".id,\"user\".name from \"user\" LEFT JOIN subeventcast ON subeventcast.userid = \"user\".id " +
+        String sql = "SELECT DISTINCT \"user\".id from \"user\" LEFT JOIN subeventcast ON subeventcast.userid = \"user\".id " +
                 "LEFT JOIN subevent ON subeventcast.subeventid = subevent.id " +
-                "WHERE (DATE(subevent.begin) NOT BETWEEN ? AND ?) AND (DATE(subevent.ending) NOT BETWEEN ? AND ?);";
-        List<User> freeUsers = jdbcTemplate.query(sql, new Object[]{begin, ending, begin, ending}, new BeanPropertyRowMapper<>(User.class));
-        System.out.println(freeUsers);
+                "WHERE (subevent.begin BETWEEN ? AND ?) OR (subevent.ending BETWEEN ? AND ?);";//haetaan varatut userit
+        List<Integer> bookedUsers = jdbcTemplate.queryForList(sql, new Object[]{begin, ending, begin, ending}, Integer.class);
+        List<User> allUsers = ud.listOfAllUsers();
+        List<User> freeUsers = allUsers.stream().filter(user -> !bookedUsers.contains(user.getId())).collect(Collectors.toList()); //valitaan ne, jotka eivät ole varattuja
         return freeUsers;
     }
 
