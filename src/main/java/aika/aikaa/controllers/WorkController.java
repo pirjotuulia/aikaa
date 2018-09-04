@@ -64,7 +64,7 @@ public class WorkController {
     }
 
     @DeleteMapping("/api/workroles/{id}")
-    public boolean deleteRolesFromWorkById(@RequestBody List<Integer> roleList, @PathVariable Integer workid) {
-        return wd.deleteRolesFromWork(roleList, workid);
+    public boolean deleteRoleFromWorkByWorkroleId(@PathVariable Integer id) {
+        return wd.deleteWorkRole(id);
     }
 }

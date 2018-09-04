@@ -107,7 +107,6 @@ public class WorkDao {
     public boolean addAllWorkRoles(Integer workid, Map<Integer, Integer> roleData) {
         List<Object[]> parameterList = new ArrayList<>();
         roleData.keySet().stream().forEach(rid -> {
-            System.out.println(workid + " " + rid + " " + roleData.get(rid));
             parameterList.add(new Object[]{workid, rid, roleData.get(rid)});
         } );
         System.out.println(parameterList);
@@ -140,7 +139,7 @@ public class WorkDao {
     }
 
     public boolean deleteWorkRole(Integer workroleid) {
-        String sql = "DELETE FROM workrole WHERE workroleid=?";
+        String sql = "DELETE FROM workrole WHERE id=?";
         int onnistui = jdbcTemplate.update(sql, new Object[]{workroleid});
         if (onnistui == 1) {
             return true;
@@ -148,9 +147,18 @@ public class WorkDao {
         return false;
     }
 
-    public boolean deleteRolesFromWork(List<Integer> roleList, Integer workid) {
-        //TODO: pitäiskö tässä sittenkin olla workroleid?? toteuta
-        return false;
-    }
+//    public boolean deleteRoleFromWork(Integer workroleid) {//EI KÄYTÖSSÄ EIKÄ KUNNOLLA TOTEUTETTU
+//        List<Object[]> parameterList = new ArrayList<>();
+//        roleList.stream().forEach(wrid -> {
+//            parameterList.add(new Object[]{workroleid});
+//        } );
+//        System.out.println(parameterList);
+//        String sql = "INSERT INTO workrole (workid, roleid, number) VALUES (?,?,?)";
+//        int[] onnistui = jdbcTemplate.batchUpdate(sql, parameterList);
+//        if (onnistui.length == roleData.keySet().size()) {
+//            return true;
+//        }
+//        return false;
+//    }
 }
 

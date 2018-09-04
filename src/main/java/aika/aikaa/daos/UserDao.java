@@ -138,6 +138,15 @@ public class UserDao {
         return roleList;
     }
 
+    public boolean deleteUserRole(Integer roleId, Integer userId) {
+        String sql = "DELETE FROM userrole WHERE roleid=? AND userId=?;";
+        int onnistui = jdbcTemplate.update(sql, new Object[]{roleId, userId});
+        if (onnistui > 0) {
+            return true;
+        }
+        return false;
+    }
+
     private User nullcheckUser(User user) {
         if (user.getName() == null) {
             user.setName("");

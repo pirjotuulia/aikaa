@@ -44,4 +44,9 @@ public class UserController {
     public boolean addUserRole(@PathVariable Integer id, @PathVariable Integer roleId) {
         return ud.addUserRole(roleId,id);
     }
+
+    @DeleteMapping("/api/userrole/{id}/{roleId}")
+    public boolean deleteUserRole(@PathVariable Integer id, @PathVariable Integer roleId) {
+        return ud.deleteUserRole(roleId,id);
+    }
 }
