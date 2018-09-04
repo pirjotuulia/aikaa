@@ -91,6 +91,20 @@ public class BookingDao {
         return bookingList;
     }
 
+    public List<Booking> placeBookingsByDay(String day, Integer id) {
+        LocalDate dayRequested = LocalDate.parse(day);
+        String sql = "SELECT DISTINCT subevent.id as id, subevent.id as subeventid, event.id as eventid, subevent.name as name, subevent.type as type, " +
+                "subevent.begin as begin, subevent.ending as ending, " +
+                "work.work as workname, place.name as placename" +
+                " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
+                " JOIN work ON work.id = subevent.workid" +
+                " JOIN place ON place.id = subevent.placeid " +
+                " JOIN event ON subevent.eventid = event.id WHERE subevent.placeid=? AND DATE(subevent.begin)=?;";
+        List<Booking> bookingList = jdbcTemplate.query(sql, new Object[]{id, dayRequested}, new BeanPropertyRowMapper(Booking.class));
+        bookingList = bookingList.stream().sorted((b1, b2) -> b1.getBegin().compareTo(b2.getBegin())).collect(Collectors.toList());
+        return bookingList;
+    }
+
     public Booking userBookingByBookingId(Integer id) {
         String sql = "SELECT event.id as eventid, subeventcast.id as id, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
                 "subevent.begin as begin, subevent.ending as ending, \"user\".name as username, \"user\".id as userid, " +

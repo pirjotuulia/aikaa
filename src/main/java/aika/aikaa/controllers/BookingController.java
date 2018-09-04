@@ -33,8 +33,11 @@ public class BookingController {
 
     @GetMapping("/api/bookings/day/{target}/{targetid}")// "2019-07-05"
     public List<Booking> userBookingsByDay(@RequestParam String day, @PathVariable String target, @PathVariable Integer targetid) {
+        System.out.println(target);
         if (target.equals("user")) {
             return bd.userBookingsByDay(day, targetid);
+        } else if (target.equals("place")) {
+            return bd.placeBookingsByDay(day, targetid);
         }
         return null;
     }

@@ -43,6 +43,15 @@ public class EventController{
         return ed.deleteEvent(id);
     }
 
+    @PostMapping("/api/events/{eventid}/works/{workid}")
+    public boolean addWorkToEvent(@PathVariable Integer eventid, @PathVariable Integer workid) {
+        return ed.addWorkToEvent(eventid, workid);
+    }
+    @DeleteMapping("/api/events/{eventid}/works/{workid}")
+    public boolean deleteWorkFromEvent(@PathVariable Integer eventid, @PathVariable Integer workid) {
+        return ed.deleteWorkFromEvent(eventid, workid);
+    }
+
     @GetMapping("/api/subevents")
     public List<SubEventDtoOut> allSubEvents() {
         return ed.allSubEvents();

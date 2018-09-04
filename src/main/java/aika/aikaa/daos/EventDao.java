@@ -200,4 +200,13 @@ public class EventDao {
         }
         return false;
     }
+
+    public boolean deleteWorkFromEvent(Integer eventid, Integer workid) {
+        String sql = "DELETE FROM eventwork WHERE eventid=? AND workid=?;";
+        int onnistui = jdbcTemplate.update(sql, new Object[]{eventid, workid});
+        if (onnistui > 0) {
+            return true;
+        }
+        return false;
+    }
 }
