@@ -6,6 +6,7 @@ import aika.aikaa.objects.Booking;
 import aika.aikaa.objects.User;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -33,7 +34,6 @@ public class BookingController {
 
     @GetMapping("/api/bookings/day/{target}/{targetid}")// "2019-07-05"
     public List<Booking> userBookingsByDay(@RequestParam String day, @PathVariable String target, @PathVariable Integer targetid) {
-        System.out.println(target);
         if (target.equals("user")) {
             return bd.userBookingsByDay(day, targetid);
         } else if (target.equals("place")) {
@@ -62,6 +62,7 @@ public class BookingController {
         return bd.freeUserForASubEvent(id);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN') or hasAuthority('ROLE_ADMIN')")
     @PostMapping("/api/bookings")
     public Booking bookUser(@RequestParam Integer subeventid, Integer userid, Integer workroleid) {
         return bd.bookUser(subeventid, userid, workroleid);

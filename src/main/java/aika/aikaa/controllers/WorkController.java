@@ -30,7 +30,7 @@ public class WorkController {
     }
 
     @PostMapping("/api/works")
-    public Work createWork(@RequestBody Work work, @RequestParam("event") boolean event, @RequestParam("eventid") Integer eventid) {
+    public Work createWork(@RequestBody Work work, @RequestParam("event") boolean event, @RequestParam(value = "eventid", required = false) Integer eventid) {
         Work created = wd.createWork(work);
         if (event) {
             boolean onnistui = ed.addWorkToEvent(eventid, created.getId());

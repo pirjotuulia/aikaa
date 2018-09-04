@@ -109,7 +109,6 @@ public class WorkDao {
         roleData.keySet().stream().forEach(rid -> {
             parameterList.add(new Object[]{workid, rid, roleData.get(rid)});
         } );
-        System.out.println(parameterList);
         String sql = "INSERT INTO workrole (workid, roleid, number) VALUES (?,?,?)";
         int[] onnistui = jdbcTemplate.batchUpdate(sql, parameterList);
         if (onnistui.length == roleData.keySet().size()) {
@@ -119,7 +118,6 @@ public class WorkDao {
     }
 
     public List<Role> addRoleDetailsToWorkById(List<Integer> roleList, Integer workId) {
-        System.out.println(roleList);
         Map<Integer, Integer> roleNumbers = new HashMap<>();
         roleList.stream().forEach(r-> {
             roleNumbers.putIfAbsent(r, 0);

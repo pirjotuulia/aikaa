@@ -58,18 +58,19 @@ public class User {
     @JsonIgnore
     public List<String> getUserLevelAsString() {
         List<String> userLevels = new ArrayList<>();
-        if (userLevel>3) {
-            userLevels.add("ROLE_GUEST");
-        }
-        if (userLevel <= 3) {
-            userLevels.add("ROLE_USER");
-        }
-        if (userLevel <= 2) {
-            userLevels.add("ROLE_ADMIN");
-        }
         if (userLevel == 1) {
             userLevels.add("ROLE_SUPERADMIN");
+            return userLevels;
+        } else if (userLevel <= 2) {
+            userLevels.add("ROLE_ADMIN");;
+            return userLevels;
+        } else if (userLevel <= 3) {
+            userLevels.add("ROLE_USER");
+            return userLevels;
+        } else if (userLevel>3) {
+            userLevels.add("ROLE_GUEST");
         }
+        System.out.println(userLevels);
         return userLevels;
     }
 
