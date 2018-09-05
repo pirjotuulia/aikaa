@@ -12,6 +12,7 @@ public class Place {
     private Integer id;
     private String name;
     private Address address;
+    private String mapurl;
 
     public Place(String name, Address address) {
         this.name = name;
@@ -47,5 +48,13 @@ public class Place {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public String getMapurl() {
+        return mapurl;
+    }
+
+    public void setMapurl(String mapurl) {
+        this.mapurl = mapurl;
     }
 }

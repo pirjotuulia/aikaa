@@ -99,7 +99,7 @@ public class BookingDao {
                 " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
                 " JOIN work ON work.id = subevent.workid" +
                 " JOIN place ON place.id = subevent.placeid " +
-                " JOIN event ON subevent.eventid = event.id WHERE subevent.placeid=? AND DATE(subevent.begin)=?;";
+                " JOIN event ON subevent.eventid = event.id WHERE subevent.placeid=? AND DATE(subevent.begin)=? ORDER BY eventid ASC;";
         List<Booking> bookingList = jdbcTemplate.query(sql, new Object[]{id, dayRequested}, new BeanPropertyRowMapper(Booking.class));
         bookingList = bookingList.stream().sorted((b1, b2) -> b1.getBegin().compareTo(b2.getBegin())).collect(Collectors.toList());
         return bookingList;
@@ -121,6 +121,40 @@ public class BookingDao {
     }
 
     public Booking bookUser(Integer subeventId, Integer userId, Integer workroleId) {
+        String checkIfExists = "SELECT event.id as eventid, subeventcast.id as id, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
+                "subevent.begin as begin, subevent.ending as ending, \"user\".name as username, \"user\".id as userid, " +
+                "role.name as rolename, work.work as workname, place.name as placename" +
+                " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
+                " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
+                " JOIN workrole ON workrole.id = subeventcast.workroleid" +
+                " JOIN role ON role.id = workrole.roleid" +
+                " JOIN work ON work.id = workrole.workid" +
+                " JOIN place ON place.id = subevent.placeid " +
+                " JOIN event ON subevent.eventid = event.id WHERE subeventid=? AND userid=? AND workroleid=?";
+        List<Booking> bookingList = jdbcTemplate.query(checkIfExists, new Object[]{subeventId, userId, workroleId}, new BeanPropertyRowMapper(Booking.class));
+        if (!bookingList.isEmpty()) {
+            return bookingList.get(0);
+        }
+        String checkIfOtherUserBooked = "SELECT event.id as eventid, subeventcast.id as id, subevent.id as subeventid, subevent.name as name, subevent.type as type, " +
+                "subevent.begin as begin, subevent.ending as ending, \"user\".name as username, \"user\".id as userid, " +
+                "role.name as rolename, work.work as workname, place.name as placename" +
+                " FROM subeventcast JOIN subevent ON subevent.id = subeventcast.subeventid" +
+                " JOIN \"user\" ON \"user\".id = subeventcast.userid" +
+                " JOIN workrole ON workrole.id = subeventcast.workroleid" +
+                " JOIN role ON role.id = workrole.roleid" +
+                " JOIN work ON work.id = workrole.workid" +
+                " JOIN place ON place.id = subevent.placeid " +
+                " JOIN event ON subevent.eventid = event.id WHERE subeventid=? AND workroleid=?";
+        List<Booking> sameWorkroleSubeventBookings = jdbcTemplate.query(checkIfOtherUserBooked, new Object[]{subeventId, workroleId}, new BeanPropertyRowMapper(Booking.class));
+        if (!sameWorkroleSubeventBookings.isEmpty()) {
+//            modifyBooking(sameWorkroleSubeventBookings, userId);//TODO: jos halutaan vaihtaa kaikki käyttäjän buukkaukset toiselle henkilölle, niin tätä kautta.Voisi tehdä bulkkibookingreitin ja metodit.
+            int bookingId = sameWorkroleSubeventBookings.get(0).getId();
+            String modifyBooking = "UPDATE subeventcast SET userid=? WHERE id=?";
+            int onnistui = jdbcTemplate.update(modifyBooking, new Object[]{userId, bookingId});
+            if (onnistui == 1) {
+                return userBookingByBookingId(bookingId);
+            }
+        }
         String sql = "INSERT INTO subeventcast (subeventid, userid, workroleid) VALUES (?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         PreparedStatementCreator psc = connection -> {
@@ -145,8 +179,9 @@ public class BookingDao {
         LocalDateTime ending = subEvent.getEnding();
         String sql = "SELECT DISTINCT \"user\".id from \"user\" LEFT JOIN subeventcast ON subeventcast.userid = \"user\".id " +
                 "LEFT JOIN subevent ON subeventcast.subeventid = subevent.id " +
-                "WHERE (subevent.begin BETWEEN ? AND ?) OR (subevent.ending BETWEEN ? AND ?);";//haetaan varatut userit
-        List<Integer> bookedUsers = jdbcTemplate.queryForList(sql, new Object[]{begin, ending, begin, ending}, Integer.class);
+                "WHERE (subevent.begin BETWEEN ? AND ?) OR (subevent.ending BETWEEN ? AND ?) " +
+                "OR (subevent.begin < ? AND subevent.ending > ?);";//haetaan varatut userit
+        List<Integer> bookedUsers = jdbcTemplate.queryForList(sql, new Object[]{begin, ending, begin, ending, begin, ending}, Integer.class);
         List<User> allUsers = ud.listOfAllUsers();
         List<User> freeUsers = allUsers.stream().filter(user -> !bookedUsers.contains(user.getId())).collect(Collectors.toList()); //valitaan ne, jotka eivät ole varattuja
         return freeUsers;

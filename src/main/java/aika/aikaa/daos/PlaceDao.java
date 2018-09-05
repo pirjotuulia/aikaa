@@ -32,7 +32,7 @@ public class PlaceDao {
     }
 
     public Place onePlace(Integer id) {
-        String sql = "SELECT place.*, address.streetaddress, address.postcode, address.country, address.city FROM place JOIN address ON place.addressId = address.id WHERE place.id=?;";
+        String sql = "SELECT place.*, address.streetaddress, address.postcode, address.country, address.city FROM place JOIN address ON place.addressid = address.id WHERE place.id=?;";
         Place place = (Place) jdbcTemplate.queryForObject(sql, new Object[]{id}, new PlaceMapper());
         return place;
     }
@@ -41,12 +41,13 @@ public class PlaceDao {
         if (place.getAddress().getId() == null) {
             place.getAddress().setId(addAddress(place.getAddress()).getId());
         }
-        String sql = "INSERT INTO place (name, addressId) VALUES (?,?);";
+        String sql = "INSERT INTO place (name, addressid, mapurl) VALUES (?,?,?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         PreparedStatementCreator psc = connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, place.getName());
             ps.setInt(2, place.getAddress().getId());
+            ps.setString(3, place.getMapurl());
             return ps;
         };
         int onnistui = jdbcTemplate.update(psc, keyHolder);
@@ -63,8 +64,8 @@ public class PlaceDao {
         } else if (place.getAddress().getId()!=null) {
             updateAddress(place.getAddress(), place.getAddress().getId());
         }
-        String sql = "UPDATE place SET name=?, addressId=? WHERE id=?";
-        int onnistui = jdbcTemplate.update(sql, new Object[]{place.getName(), place.getAddress().getId(), id});
+        String sql = "UPDATE place SET name=?, addressId=?, mapurl=? WHERE id=?";
+        int onnistui = jdbcTemplate.update(sql, new Object[]{place.getName(), place.getAddress().getId(), place.getMapurl(), id});
         if (onnistui > 0) {
             return true;
         }
@@ -115,6 +116,7 @@ public class PlaceDao {
             Place place = new Place();
             place.setId(rs.getInt("id"));
             place.setName(rs.getString("name"));
+            place.setMapurl(rs.getString("mapurl"));
             place.setAddress(new Address());
             place.getAddress().setId(rs.getInt("addressid"));
             place.getAddress().setStreetAddress(rs.getString("streetaddress"));

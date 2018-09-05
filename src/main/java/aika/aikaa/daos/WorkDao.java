@@ -120,8 +120,7 @@ public class WorkDao {
     public List<Role> addRoleDetailsToWorkById(List<Integer> roleList, Integer workId) {
         Map<Integer, Integer> roleNumbers = new HashMap<>();
         roleList.stream().forEach(r-> {
-            roleNumbers.putIfAbsent(r, 0);
-            roleNumbers.put(r, roleNumbers.get(r)+1);
+            roleNumbers.putIfAbsent(r, 1);
         });
         addAllWorkRoles(workId, roleNumbers);
         return allRolesByWorkId(workId);
